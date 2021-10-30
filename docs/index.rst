@@ -1,1 +1,3 @@
-Welcome to Cago documentation
+Cago
+====
+Cago provides easier way to do calculations.
