@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:gravity="center"
+        android:background="@drawable/_background">
+
+        <ToggleButton
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:id="@+id/value"
+            android:textColor="@color/primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/value"
+            android:textOff="@string/off"
+            android:textOn="@string/on"/>
+    </RelativeLayout>
+    </FrameLayout>
+</layout>
