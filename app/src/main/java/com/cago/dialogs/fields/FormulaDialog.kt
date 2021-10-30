@@ -17,6 +17,7 @@ class FormulaDialog(private val output: Output): FieldDialog() {
     ): View? {
         binding = DialogFormulaBinding.inflate(inflater)
         binding?.let {
+            it.name.text = output.name
             it.value.setText(output.formula)
             it.ok.setOnClickListener {
                 output.formula = binding?.value?.text.toString()

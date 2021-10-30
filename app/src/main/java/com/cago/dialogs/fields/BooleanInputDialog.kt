@@ -17,6 +17,7 @@ class BooleanInputDialog(val field: BooleanInput): FieldDialog() {
     ): View? {
         binding = DialogInputBooleanBinding.inflate(inflater)
         binding?.let {
+            it.name.text = field.name
             it.value.isChecked = field.value == 1.0
             it.value.setOnClickListener { 
                 field.value = if (binding?.value?.isChecked == true) 1.0 else 0.0

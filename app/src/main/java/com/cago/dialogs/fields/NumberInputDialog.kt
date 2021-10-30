@@ -17,6 +17,7 @@ class NumberInputDialog(val field: NumberInput): FieldDialog() {
     ): View? {
         binding = DialogInputNumberBinding.inflate(inflater)
         binding?.let {
+            it.name.text = field.name 
             it.value.setText(field.displayValue())
             it.ok.setOnClickListener {
                 binding?.value?.let{ et ->

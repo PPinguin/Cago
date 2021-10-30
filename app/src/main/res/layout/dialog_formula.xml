@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <FrameLayout
@@ -7,33 +8,49 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
     
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:background="@drawable/_background"
         android:padding="16dp">
 
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:textSize="8pt"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <EditText
             android:id="@+id/value"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/formula"
+            android:importantForAutofill="no"
             android:inputType="text"
-            android:importantForAutofill="no" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ok"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name" />
 
         <ImageButton
             android:id="@+id/ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            app:srcCompat="@drawable/ic_ok"
-            android:padding="8dp"
             android:background="@null"
-            android:contentDescription="@null" />
+            android:contentDescription="@null"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/value"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/value"
+            app:srcCompat="@drawable/ic_ok" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </layout>

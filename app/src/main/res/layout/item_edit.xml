@@ -28,6 +28,7 @@
             android:textSize="12pt" />
 
         <TextView
+            style="@style/SingleLineText"
             android:id="@+id/name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -37,6 +38,7 @@
             android:text="@{field.name}"/>
 
         <TextView
+            style="@style/SingleLineText"
             android:id="@+id/data"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

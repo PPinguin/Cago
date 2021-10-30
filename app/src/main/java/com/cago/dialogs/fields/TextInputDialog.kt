@@ -17,6 +17,7 @@ class TextInputDialog(val field: TextInput): FieldDialog() {
     ): View? {
         binding = DialogInputTextBinding.inflate(inflater)
         binding?.let {
+            it.name.text = field.name
             it.text.setText(field.displayValue())
             it.ok.setOnClickListener {
                 field.text = binding?.text?.text.toString()

@@ -73,7 +73,7 @@ class EditPackageOutputFragment : Fragment(), EditPackageFragment {
                     requireActivity().supportFragmentManager,
                     getString(R.string.output_edit)
                 )
-            editPackListAdapter.notifyItemChanged(viewModel.getOutputIndex(it))
+            editPackListAdapter.notifyItemChanged(viewModel.activeOutputIndex)
         }
     }
 

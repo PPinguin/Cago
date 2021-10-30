@@ -18,6 +18,7 @@ class CountInputDialog(val field: CountInput): FieldDialog() {
         binding = DialogInputCountBinding.inflate(inflater)
         var count = field.value?.toInt() ?: 0
         binding?.let{
+            it.name.text = field.name
             it.value.text = "$count"
             it.btnLess.setOnClickListener { _ ->
                 count--

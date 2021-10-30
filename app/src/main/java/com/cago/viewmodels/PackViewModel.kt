@@ -145,7 +145,6 @@ class PackViewModel(private val packController: PackController) : ViewModel() {
             if (packController.outputsList.isNotEmpty()) {
                 packController.updateAll()
                 withContext(Dispatchers.Main) { updateOutputs() }
-                packController.savePack()
             }
         }
     }
@@ -161,9 +160,11 @@ class PackViewModel(private val packController: PackController) : ViewModel() {
     }
 
     fun closePack() {
-        packController.close()
+        viewModelScope.launch(Dispatchers.Default) {
+            packController.savePack()
+            packController.close()
+        }
         activeInputIndex = -1
         activeOutputIndex = -1
     }
-
 }

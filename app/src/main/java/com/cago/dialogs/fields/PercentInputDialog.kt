@@ -18,6 +18,7 @@ class PercentInputDialog(val field: PercentInput): FieldDialog() {
     ): View? {
         binding = DialogInputPercentBinding.inflate(inflater)
         binding?.let {
+            it.name.text = field.name
             it.value.apply {
                 progress = field.value?.times(100)?.toInt() ?: 0
                 var s = "$progress%"

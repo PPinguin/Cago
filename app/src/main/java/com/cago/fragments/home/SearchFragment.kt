@@ -51,15 +51,16 @@ class SearchFragment : Fragment() {
                     if (isNotEmpty()) viewModel.updateSearchResults(this.toString())
                 }
             }
+            it.searchView.isIconified = false
         }
         viewModel.searchLiveData.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
             binding?.let {
                 it.refresh.isRefreshing = false
-                if (list.isEmpty() && it.searchView.query.isNotEmpty())
-                    it.label.visibility = View.VISIBLE
+                it.img.visibility = if (list.isEmpty())
+                    View.VISIBLE
                 else
-                    it.label.visibility = View.GONE
+                    View.GONE
             }
         }
         viewModel.message.observe(viewLifecycleOwner) { msg ->
