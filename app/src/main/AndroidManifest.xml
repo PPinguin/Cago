@@ -17,6 +17,7 @@
         android:theme="@style/Theme.Cago">
 
         <activity
+            android:screenOrientation="portrait"
             android:name=".activities.PackActivity"
             android:exported="true">
             <intent-filter>
@@ -30,7 +31,8 @@
                     android:host="cago.app"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activities.HomeActivity">
+        <activity android:name=".activities.HomeActivity"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />

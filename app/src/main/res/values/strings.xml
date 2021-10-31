@@ -61,4 +61,5 @@
     <string name="error_initializing">At first start app must has Internet connection in case of initializing user.</string>
     <string name="message">Message</string>
     <string name="warning">Warning!</string>
+    <string name="link_repo">https://github.com/PPinguin/Cago</string>
 </resources>

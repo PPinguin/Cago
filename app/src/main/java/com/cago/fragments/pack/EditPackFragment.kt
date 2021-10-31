@@ -52,6 +52,10 @@ class EditPackFragment : Fragment() {
                             editInfo()
                             true
                         }
+                        R.id.help -> {
+                            (requireActivity() as PackActivity).help()
+                            true
+                        }
                         else -> super.onOptionsItemSelected(item)
                     }
                 }
