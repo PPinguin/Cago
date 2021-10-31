@@ -1,6 +1,7 @@
 package com.cago.repository
 
 import android.content.Context
+import android.net.ConnectivityManager
 import androidx.core.content.edit
 import com.cago.models.Pack
 import com.cago.models.server.PackInfo
@@ -47,6 +48,8 @@ class Repository(
             }
         }
     }
+    
+    fun isReady(): Boolean = UID != null && firebaseManager.isOnline()
     
     fun createPack(name: String, handle: (ErrorType?) -> Unit){
         if(fileManager.createPack(name))

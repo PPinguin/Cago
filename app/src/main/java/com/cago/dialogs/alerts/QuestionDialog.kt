@@ -1,31 +1,26 @@
 package com.cago.dialogs.alerts
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.cago.databinding.DialogQuestionBinding
-import com.cago.dialogs.AlertDialog
+import com.cago.R
+import com.cago.dialogs.BaseDialog
 
 class QuestionDialog(
     private val listener: ()->Unit,
     private val question: String
-): AlertDialog() {
+): BaseDialog() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val binding = DialogQuestionBinding.inflate(inflater)
-        binding.apply {
-            title.text = question
-            positive.setOnClickListener { 
-                listener()
-                dismiss()
-            }
-            negative.setOnClickListener { dismiss() }
-        }
-        return binding.root
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return activity?.let {
+            AlertDialog.Builder(it).apply {
+                setMessage(question)
+                setPositiveButton(getString(R.string.yes)){ d, _ ->
+                    listener()
+                    d.dismiss()
+                }
+                setNegativeButton(getString(R.string.no)){ d, _ -> d.dismiss()}
+            }.create()
+        } ?: throw IllegalStateException("Activity cannot be null")
     }
 }

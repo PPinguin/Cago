@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.cago.databinding.DialogOutputBinding
-import com.cago.dialogs.AlertDialog
+import com.cago.dialogs.BaseDialog
 import com.cago.models.logic.Output
 
 class OutputDialog(
     private val listener: (String, Boolean, String?) -> Boolean,
     private val output: Output? = null,
     private val label: String? = null,
-) : AlertDialog() {
+) : BaseDialog() {
 
     override fun onCreateView(
         inflater: LayoutInflater,

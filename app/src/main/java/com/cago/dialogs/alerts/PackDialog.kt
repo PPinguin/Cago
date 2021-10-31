@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.cago.databinding.DialogPackBinding
-import com.cago.dialogs.AlertDialog
+import com.cago.dialogs.BaseDialog
 
 class PackDialog(
     private val listener: (String)->Unit, 
     private val name: String? = null
-): AlertDialog() {
+): BaseDialog() {
 
     override fun onCreateView(
         inflater: LayoutInflater,

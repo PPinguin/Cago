@@ -56,4 +56,9 @@
     <string name="output_copy">Output (copy)</string>
     <string name="question_delete">Delete \"%s\"?</string>
     <string name="help">Help</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="error_initializing">At first start app must has Internet connection in case of initializing user.</string>
+    <string name="message">Message</string>
+    <string name="warning">Warning!</string>
 </resources>

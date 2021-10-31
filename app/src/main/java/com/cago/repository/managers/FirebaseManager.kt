@@ -20,6 +20,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import java.io.File
+import java.net.InetAddress
 
 class FirebaseManager(override val context: Context) : Manager {
 
@@ -35,6 +36,11 @@ class FirebaseManager(override val context: Context) : Manager {
         auth.signInAnonymously()
     }
 
+    fun isOnline(): Boolean = 
+        try{
+            !InetAddress.getByName("google.com").equals("")
+        } catch (e: Exception) { false }
+    
     fun getCurrentUID() = auth.currentUser?.uid
 
     fun downloadPack(path: String?, callback: Callback<File>) {

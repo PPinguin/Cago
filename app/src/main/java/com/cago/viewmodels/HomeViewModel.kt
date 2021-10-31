@@ -25,6 +25,8 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
     val searchLiveData = MutableLiveData<List<PackInfo>>(listOf())
     val message = MutableLiveData<String>()
     
+    fun isReady(): Boolean = repository.isReady()
+    
     fun createPack(name: String) =
         viewModelScope.launch { 
             repository.createPack(name, this@HomeViewModel::handleError) 

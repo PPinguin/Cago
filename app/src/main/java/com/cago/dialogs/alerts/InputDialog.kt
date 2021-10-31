@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.cago.R
 import com.cago.databinding.DialogInputBinding
-import com.cago.dialogs.AlertDialog
+import com.cago.dialogs.BaseDialog
 import com.cago.models.logic.Input
 import com.cago.utils.InputType
 
@@ -15,7 +15,7 @@ class InputDialog(
     private val listener: (String, InputType) -> Boolean,
     private val input: Input? = null,
     private val label: String? = null,
-) : AlertDialog() {
+) : BaseDialog() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
