@@ -9,6 +9,7 @@ import com.cago.repository.callbacks.Callback
 import com.cago.repository.managers.FileManager
 import com.cago.repository.managers.FirebaseManager
 import com.cago.utils.ErrorType
+import com.cago.utils.GlobalUtils.UID
 import com.cago.utils.InputType
 import java.io.File
 import java.util.*
@@ -33,8 +34,7 @@ class PackController(
     fun openPack(data: Bundle, callback: Callback<File>) {
         val name = data.getString("name")!!
         if(data.containsKey("path")){
-            val path = 
-                data.getString("path", "-") + "/" +
+            val path =  data.getString("path", "-") + "/" +
                         data.getString("name", "-")
             firebaseManager.downloadPack(path, callback)
         } else {
@@ -53,7 +53,7 @@ class PackController(
         if(own != true) return false
         pack?.writeText("")
         return try {
-            pack?.appendText("${Repository.UID}\n")
+            pack?.appendText("$UID\n")
             inputsList.forEach { input ->
                 input as Input
                 pack?.appendText("> ${input.name} ${input.type} ${input.displayValue()}\n")
@@ -79,7 +79,7 @@ class PackController(
             var end = false
             description = ""
             pack?.forEachLine { line ->
-                if (own == null) own = line == Repository.UID
+                if (own == null) own = line == UID
                 else if (!end){
                     val params = line.split(" ")
                     when (params[0]) {

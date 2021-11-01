@@ -2,6 +2,7 @@ package com.cago.repository.managers
 
 import android.content.Context
 import com.cago.repository.Repository
+import com.cago.utils.GlobalUtils.UID
 import java.io.File
 
 class FileManager(override val context: Context): Manager {
@@ -16,7 +17,7 @@ class FileManager(override val context: Context): Manager {
 
     fun createPack(name: String): Boolean {
         val f = getFile(name)
-        return f.createNewFile().also { if (it) f.appendText("${Repository.UID}\n") }
+        return f.createNewFile().also { if (it) f.appendText("$UID\n") }
     }
 
     fun deletePack(name: String): Boolean =

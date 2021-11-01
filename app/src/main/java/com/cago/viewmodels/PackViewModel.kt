@@ -11,9 +11,7 @@ import com.cago.repository.PackController
 import com.cago.repository.callbacks.Callback
 import com.cago.utils.ErrorType
 import com.cago.utils.InputType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import java.io.File
 
 class PackViewModel(private val packController: PackController) : ViewModel() {
@@ -59,17 +57,23 @@ class PackViewModel(private val packController: PackController) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             packController.openPack(bundle, object : Callback<File> {
                 override fun success(data: File?) {
-                    packController.setPack(data)
-                    packController.loadPack()
-                    updateInputs()
-                    updateOutputs()
-                    pack.postValue(bundle.getString("name"))
+                    loadPack(bundle.getString("name"), data)
                 }
 
                 override fun failure(error: ErrorType?) {
                     pack.postValue(null)
                 }
             })
+        }
+    }
+    
+    fun loadPack(name: String?, file: File?){
+        viewModelScope.launch(Dispatchers.Default){
+            packController.setPack(file)
+            packController.loadPack()
+            updateInputs()
+            updateOutputs()
+            pack.postValue(name)
         }
     }
 
@@ -91,9 +95,7 @@ class PackViewModel(private val packController: PackController) : ViewModel() {
         packController.deleteInput(input)
         updateInputs()
     }
-
-    fun getInputIndex(input: Input) = packController.inputsList.indexOf(input)
-
+    
     fun getInput(index: Int) = packController.inputsList[index]
 
     private fun updateInputs() {
@@ -127,11 +129,10 @@ class PackViewModel(private val packController: PackController) : ViewModel() {
         outputsLiveData.postValue(packController.outputsList)
     }
 
-    fun handleOutput(output: Output) {
-        viewModelScope.launch(Dispatchers.IO) {
+    fun handleOutput(output: Output) =
+        viewModelScope.launch(Dispatchers.Default) {
             packController.parseFormula(output)
         }
-    }
 
     fun getDescription() = packController.description ?: ""
     fun setDescription(text: String) {
@@ -140,16 +141,15 @@ class PackViewModel(private val packController: PackController) : ViewModel() {
 
     fun isOwnUser() = packController.own
 
-    fun run() {
+    fun run() =
         viewModelScope.launch(Dispatchers.Default) {
             if (packController.outputsList.isNotEmpty()) {
                 packController.updateAll()
                 withContext(Dispatchers.Main) { updateOutputs() }
             }
         }
-    }
 
-    fun update(position: Int) {
+    fun update(position: Int) =
         viewModelScope.launch(Dispatchers.Default) {
             packController.update(position)
             withContext(Dispatchers.Main) {
@@ -157,10 +157,10 @@ class PackViewModel(private val packController: PackController) : ViewModel() {
                 editedInput.postValue(position)
             }
         }
-    }
 
+    @DelicateCoroutinesApi
     fun closePack() {
-        viewModelScope.launch(Dispatchers.Default) {
+        GlobalScope.launch { 
             packController.savePack()
             packController.close()
         }

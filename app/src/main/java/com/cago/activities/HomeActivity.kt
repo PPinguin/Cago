@@ -1,6 +1,8 @@
 package com.cago.activities
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +10,7 @@ import androidx.core.os.bundleOf
 import com.cago.CagoApplication
 import com.cago.R
 import com.cago.dialogs.alerts.MessageDialog
+import com.cago.utils.GlobalUtils
 import com.cago.viewmodels.HomeViewModel
 
 class HomeActivity : AppCompatActivity() {
@@ -19,7 +22,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        if (!viewModel.isReady())
+        if (GlobalUtils.UID == null)
             MessageDialog({ finish() }, getString(R.string.error_initializing))
                 .show(
                     supportFragmentManager,

@@ -1,7 +1,6 @@
 package com.cago.repository
 
 import android.content.Context
-import android.net.ConnectivityManager
 import androidx.core.content.edit
 import com.cago.models.Pack
 import com.cago.models.server.PackInfo
@@ -11,8 +10,9 @@ import com.cago.repository.managers.FileManager
 import com.cago.repository.managers.FirebaseManager
 import com.cago.repository.managers.Manager
 import com.cago.utils.ErrorType
+import com.cago.utils.GlobalUtils.UID
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -23,22 +23,20 @@ class Repository(
     private val fileManager: FileManager
 ) : Manager {
     private val key = "ID"
-    companion object{
-        var UID: String? = null
-    }
+    
     
     val allPacks: Flow<List<Pack>> = packDao.getAllFlow()  
-    private val scope = CoroutineScope(Job())
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     init {
         val sharedPref = context.getSharedPreferences(key, Context.MODE_PRIVATE)
         UID = sharedPref.getString(key, null)
         if (UID == null) {
+            UID = firebaseManager.getCurrentUID()
             sharedPref.edit {
-                putString(key, firebaseManager.getCurrentUID())
+                putString(key, UID)
             }
         }
-        UID = sharedPref.getString(key, null)
         scope.launch {
             packDao.getList().forEach { 
                 if(!fileManager.valid(it.name)) {
@@ -48,8 +46,6 @@ class Repository(
             }
         }
     }
-    
-    fun isReady(): Boolean = UID != null && firebaseManager.isOnline()
     
     fun createPack(name: String, handle: (ErrorType?) -> Unit){
         if(fileManager.createPack(name))

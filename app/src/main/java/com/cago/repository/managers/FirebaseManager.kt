@@ -2,11 +2,13 @@ package com.cago.repository.managers
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import com.cago.models.Pack
 import com.cago.models.server.PackInfo
 import com.cago.repository.Repository
 import com.cago.repository.callbacks.Callback
 import com.cago.utils.ErrorType
+import com.cago.utils.GlobalUtils.UID
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -35,11 +37,6 @@ class FirebaseManager(override val context: Context) : Manager {
         dbRef = Firebase.database.reference
         auth.signInAnonymously()
     }
-
-    fun isOnline(): Boolean = 
-        try{
-            !InetAddress.getByName("google.com").equals("")
-        } catch (e: Exception) { false }
     
     fun getCurrentUID() = auth.currentUser?.uid
 
@@ -57,13 +54,13 @@ class FirebaseManager(override val context: Context) : Manager {
     fun uploadPack(pack: File, callback: Callback<String>) {
         val name = pack.nameWithoutExtension
         val file = Uri.fromFile(pack)
-        val fileRef = stRef.child("packages/${Repository.UID}/${file.lastPathSegment}")
+        val fileRef = stRef.child("packages/$UID/${file.lastPathSegment}")
         fileRef.putFile(file)
             .addOnFailureListener {
                 callback.failure(ErrorType.ERROR_UPLOAD)
             }
             .addOnSuccessListener {
-                val info = PackInfo(name, Repository.UID, true)
+                val info = PackInfo(name, UID, true)
                 val ref = dbRef.push()
                 ref.setValue(info)
                     .addOnCompleteListener {
@@ -78,7 +75,7 @@ class FirebaseManager(override val context: Context) : Manager {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val result = snapshot.children
                         .map { s -> s.getValue<PackInfo>()!! }
-                        .filter { i -> i.path != Repository.UID && i.public }
+                        .filter { i -> i.path != UID && i.public }
                     callback.success(result)
                 }
 
