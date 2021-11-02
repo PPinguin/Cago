@@ -50,7 +50,6 @@ class MenuFragment : Fragment() {
                 }
             }
             it.fabNew.setOnClickListener { createPack() }
-            it.newPack.setOnClickListener { createPack() }
         }
         viewModel.message.observe(viewLifecycleOwner) { msg ->
             if (msg.isNotEmpty()) {
@@ -61,7 +60,7 @@ class MenuFragment : Fragment() {
             }
         }
         viewModel.listLiveData.observe(viewLifecycleOwner) {
-            binding?.newPack?.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+            binding?.emptyList?.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
             adapter.submitList(it.toMutableList())
         }
         return binding?.root

@@ -25,28 +25,27 @@
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            app:spanCount="2">
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         </androidx.recyclerview.widget.RecyclerView>
 
-        <Button
-            android:id="@+id/new_pack"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+        <TextView
+            android:id="@+id/empty_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/new_pack"
+            android:text="@string/empty_menu_list"
+            android:textSize="12pt"
+            android:textAlignment="center"
+            android:padding="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/toolbar"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            app:icon="@drawable/ic_add" />
-
-
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        
         <Button
             style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
             android:id="@+id/fab_new"
@@ -54,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:text="@string/new_pack"
+            android:elevation="0dp"
             android:background="@drawable/_background_accent"
             app:icon="@drawable/ic_add"
             app:layout_constraintBottom_toBottomOf="parent"

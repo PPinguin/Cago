@@ -29,7 +29,7 @@ class PackFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         binding = FragmentPackBinding.inflate(inflater)
         adapter = PackFragmentsAdapter(this)
@@ -41,11 +41,6 @@ class PackFragment : Fragment() {
             it.toolbar.apply {
                 title = viewModel.pack.value
                 inflateMenu(R.menu.pack_menu)
-                if (viewModel.isOwnUser() == true)
-                    menu.add(0, editID, Menu.NONE, getString(R.string.edit)).apply { 
-                        icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_edit)
-                        setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
-                    }
                 setOnMenuItemClickListener { item ->
                     when (item.itemId) {
                         editID -> {
@@ -56,22 +51,24 @@ class PackFragment : Fragment() {
                             openInfo()
                             true
                         }
-                        R.id.help -> { 
+                        R.id.help -> {
                             (requireActivity() as PackActivity).help()
                             true
                         }
                         else -> super.onOptionsItemSelected(item)
                     }
                 }
-                TabLayoutMediator(it.tabs, it.pager){ tab, position ->
+                it.fabEdit.visibility =
+                    if (viewModel.isOwnUser() == true) View.VISIBLE else View.GONE
+                TabLayoutMediator(it.tabs, it.pager) { tab, position ->
                     tab.text = if (position % 2 == 0)
                         getString(R.string.input)
                     else
                         getString(R.string.output)
                 }.attach()
             }
-            viewModel.message.observe(viewLifecycleOwner){ msg ->
-                if(msg.isNotEmpty()) {
+            viewModel.message.observe(viewLifecycleOwner) { msg ->
+                if (msg.isNotEmpty()) {
                     Snackbar.make(it.root, msg, Snackbar.LENGTH_SHORT).show()
                     viewModel.message.value = ""
                 }
