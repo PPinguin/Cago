@@ -25,7 +25,8 @@
             android:layout_height="0dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:spanCount="2"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -33,19 +34,35 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
-        <TextView
+        
+
+        <LinearLayout
             android:id="@+id/empty_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/empty_menu_list"
-            android:textSize="12pt"
-            android:textAlignment="center"
-            android:padding="24dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/toolbar"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-        
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@drawable/ic_pack"
+                app:tint="@color/offline"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="24dp"
+                android:text="@string/empty_menu_list"
+                android:textAlignment="center"
+                android:textSize="12pt" />
+        </LinearLayout>
+
         <Button
             style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton.Icon"
             android:id="@+id/fab_new"

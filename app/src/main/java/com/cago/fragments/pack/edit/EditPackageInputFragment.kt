@@ -63,11 +63,15 @@ class EditPackageInputFragment : Fragment(), EditPackageFragment {
                 { n, t -> viewModel.editInput(it, n, t) },
                 it, getString(R.string.input_edit)
             )
+                .apply { 
+                    setOnAccepted { 
+                        editPackListAdapter.notifyItemChanged(viewModel.activeInputIndex)
+                    }
+                }
                 .show(
                     requireActivity().supportFragmentManager,
                     getString(R.string.input_edit)
                 )
-            editPackListAdapter.notifyItemChanged(viewModel.activeInputIndex)
         }
     }
 

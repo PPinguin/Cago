@@ -32,6 +32,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/text"
+            android:background="@null"
             android:importantForAutofill="no"
             android:inputType="textShortMessage"
             app:layout_constraintBottom_toBottomOf="parent"

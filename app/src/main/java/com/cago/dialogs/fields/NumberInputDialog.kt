@@ -19,6 +19,7 @@ class NumberInputDialog(val field: NumberInput): FieldDialog() {
         binding?.let {
             it.name.text = field.name 
             it.value.setText(field.displayValue())
+            it.value.requestFocus()
             it.ok.setOnClickListener {
                 binding?.value?.let{ et ->
                     if (et.text.isEmpty()) et.setText("0")

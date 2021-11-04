@@ -19,6 +19,7 @@ class TextInputDialog(val field: TextInput): FieldDialog() {
         binding?.let {
             it.name.text = field.name
             it.text.setText(field.displayValue())
+            it.text.requestFocus()
             it.ok.setOnClickListener {
                 field.text = binding?.text?.text.toString()
                 dismiss()

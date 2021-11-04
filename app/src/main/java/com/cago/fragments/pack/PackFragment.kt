@@ -43,10 +43,6 @@ class PackFragment : Fragment() {
                 inflateMenu(R.menu.pack_menu)
                 setOnMenuItemClickListener { item ->
                     when (item.itemId) {
-                        editID -> {
-                            editPack()
-                            true
-                        }
                         R.id.info -> {
                             openInfo()
                             true
@@ -60,6 +56,7 @@ class PackFragment : Fragment() {
                 }
                 it.fabEdit.visibility =
                     if (viewModel.isOwnUser() == true) View.VISIBLE else View.GONE
+                it.fabEdit.setOnClickListener { editPack() }
                 TabLayoutMediator(it.tabs, it.pager) { tab, position ->
                     tab.text = if (position % 2 == 0)
                         getString(R.string.input)

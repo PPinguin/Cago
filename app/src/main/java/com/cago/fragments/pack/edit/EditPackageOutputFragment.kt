@@ -69,11 +69,15 @@ class EditPackageOutputFragment : Fragment(), EditPackageFragment {
                 { n, v, _ -> viewModel.editOutput(it, n, v) },
                 it, getString(R.string.output_edit)
             )
+                .apply { 
+                    setOnAccepted { 
+                        editPackListAdapter.notifyItemChanged(viewModel.activeOutputIndex)
+                    }
+                }
                 .show(
                     requireActivity().supportFragmentManager,
                     getString(R.string.output_edit)
                 )
-            editPackListAdapter.notifyItemChanged(viewModel.activeOutputIndex)
         }
     }
 

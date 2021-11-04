@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="24dp">
 
             <EditText
                 android:id="@+id/input"
@@ -25,7 +25,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
-                android:textSize="10pt"
+                android:textSize="12pt"
+                android:background="@null"
                 android:hint="@string/info"
                 android:importantForAutofill="no" />
         </LinearLayout>
