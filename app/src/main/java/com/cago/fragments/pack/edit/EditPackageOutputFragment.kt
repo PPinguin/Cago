@@ -56,7 +56,7 @@ class EditPackageOutputFragment : Fragment(), EditPackageFragment {
                 .apply {
                     setOnAccepted {
                         editPackListAdapter.notifyItemChanged(viewModel.getOutputIndex(it))
-                        viewModel.handleOutput(it)
+                        if(it.value == null) viewModel.handleOutput(it)
                     }
                 }
                 .show(requireActivity().supportFragmentManager, getString(R.string.formula))

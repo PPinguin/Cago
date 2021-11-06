@@ -18,7 +18,7 @@ import kotlin.math.pow
 class PackController(
     val context: Context,
     private val firebaseManager: FirebaseManager,
-    private val fileManager: FileManager
+    private val fileManager: FileManager,
 ) {
 
     private var pack: File? = null
@@ -33,24 +33,24 @@ class PackController(
 
     fun openPack(data: Bundle, callback: Callback<File>) {
         val name = data.getString("name")!!
-        if(data.containsKey("path")){
-            val path =  data.getString("path", "-") + "/" +
-                        data.getString("name", "-")
+        if (data.containsKey("path")) {
+            val path = data.getString("path", "-") + "/" +
+                    data.getString("name", "-")
             firebaseManager.downloadPack(path, callback)
         } else {
             if (fileManager.valid(name))
                 callback.success(fileManager.getFile(name))
-            else 
+            else
                 callback.failure(ErrorType.ERROR_OPEN)
         }
     }
-    
-    fun setPack(file: File?){
-        if(pack == null && file != null) pack = file
+
+    fun setPack(file: File?) {
+        if (pack == null && file != null) pack = file
     }
 
     fun savePack(): Boolean {
-        if(own != true) return false
+        if (own != true) return false
         pack?.writeText("")
         return try {
             pack?.appendText("$UID\n")
@@ -80,17 +80,17 @@ class PackController(
             description = ""
             pack?.forEachLine { line ->
                 if (own == null) own = line == UID
-                else if (!end){
+                else if (!end) {
                     val params = line.split(" ")
                     when (params[0]) {
                         ">" -> {
                             createInput(params[1], InputType.valueOf(params[2]))
-                            if(params.size > 3 && params[3].isNotEmpty())
+                            if (params.size > 3 && params[3].isNotEmpty())
                                 (inputsList.last() as Input).setValue(params[3])
                         }
                         "-" -> createOutput(params[1], false, params[2])
                         "+" -> createOutput(params[1], true, params[2])
-                        "###" -> end = true 
+                        "###" -> end = true
                     }
                 } else description += line
             }
@@ -128,11 +128,14 @@ class PackController(
 
     fun createOutput(name: String, visible: Boolean, formula: String) {
         outputsList.add(Output(name, visible, formula))
-        if (formula.isNotEmpty()) parseFormula(outputsList.last() as Output)
+        if (formula.isNotEmpty()) handleOutput(outputsList.last() as Output)
     }
 
     fun deleteOutput(output: Output) {
         outputsList.remove(output)
+        val pos = outputsList.indexOf(output)
+        relationIO.removeAll { pair -> pair.second == pos }
+        relationOO.removeAll { pair -> pair.second == pos }
     }
 
     fun editOutput(output: Output, name: String, visible: Boolean) {
@@ -146,16 +149,26 @@ class PackController(
         outputsList.find { it.name == name }.let {
             it == null || if (position != null) it == outputsList[position] else false
         }
+    
+    fun handleOutput(output: Output){
+        output.apply { 
+            if(parseFormula(this)){
+                calculate(this)
+                actions.clear()
+                actions.add(value.toString())
+            }
+        }
+    }
 
-    fun parseFormula(output: Output) {
+    private fun parseFormula(output: Output): Boolean {
         var token = ""
+        var independent = true
         val stack = Stack<Char>()
         val pos = outputsList.indexOf(output)
         relationIO.removeAll { pair -> pair.second == pos }
         relationOO.removeAll { pair -> pair.second == pos }
         output.apply {
             actions.clear()
-            value = null
             for (c in "$formula;") {
                 if (c == ' ') continue
                 if (c.isDigit() || c in arrayOf('.', '#', '@')) token += c
@@ -164,16 +177,23 @@ class PackController(
                         when (token[0]) {
                             '#' -> {
                                 token.drop(1).toIntOrNull()?.minus(1)?.let {
-                                    (it to pos).let { p ->
-                                        if (!relationIO.contains(p)) relationIO.add(p)
-                                    }
+                                    (it to pos).let { p -> relationIO.add(p) }
+                                    independent = false
                                 }
                             }
                             '@' -> {
                                 token.drop(1).toIntOrNull()?.minus(1)?.let {
-                                    (it to pos).let { p ->
-                                        if (!relationOO.contains(p)) relationOO.add(p)
+                                    if(pos == it) return true
+                                    val s = Stack<Int>()
+                                    s.push(it)
+                                    while (!s.empty()) {
+                                        val i = s.pop()
+                                        (i to pos).let { p -> relationOO.add(p) }
+                                        relationOO
+                                            .filter { oo -> oo.second == i }
+                                            .forEach { oo -> s.push(oo.first) }
                                     }
+                                    independent = false
                                 }
                             }
                         }
@@ -212,57 +232,65 @@ class PackController(
             if (token.isNotEmpty()) actions.add(token)
             while (!stack.empty()) actions.add(stack.pop().toString())
         }
+        return independent
     }
 
     private fun calculate(output: Output) {
-        val s = Stack<Double>()
+        val stack = Stack<Double>()
         val pos = outputsList.indexOf(output)
         output.apply {
             error = actions.isEmpty()
             actions.forEach {
                 try {
                     when {
-                        it[0] == '#' -> s.push(inputsList[it.drop(1).toInt() - 1].value)
+                        it[0] == '#' -> stack.push(inputsList[it.drop(1).toInt() - 1].value)
                         it[0] == '@' -> (it.drop(1).toInt() - 1).also { i ->
                             if (i != pos)
-                                s.push(outputsList[i].value)
+                                stack.push(outputsList[i].value)
                             else throw Exception()
                         }
-                        it == "+" -> s.push(s.pop() + s.pop())
-                        it == "-" -> s.push(-s.pop() + s.pop())
-                        it == "*" -> s.push(s.pop() * s.pop())
-                        it == "/" -> s.push(1 / s.pop() * s.pop())
+                        it == "+" -> stack.push(stack.pop() + stack.pop())
+                        it == "-" -> stack.push(-stack.pop() + stack.pop())
+                        it == "*" -> stack.push(stack.pop() * stack.pop())
+                        it == "/" -> stack.push(1 / stack.pop() * stack.pop())
                         it == "^" -> {
-                            s.push(s[s.size - 2].pow(s.pop()))
-                            s.removeAt(s.size - 2) // clear stack
+                            stack.push(stack[stack.size - 2].pow(stack.pop()))
+                            stack.removeAt(stack.size - 2) // clear stack
                         }
-                        else -> s.push(it.toDouble())
+                        else -> stack.push(it.toDouble())
                     }
                 } catch (e: Exception) {
                     error = true
+                    value = null
                     return
                 }
             }
-            if (!error) value = s.pop()
+            if (!error) value = stack.pop()
         }
     }
 
-    fun updateAll() {
-        outputsList.forEachIndexed { i, f ->
-            if (f.value == null) {
-                calculate(f as Output)
-                relationOO.filter { it.first == i }
-                    .forEach { calculate(outputsList[it.second] as Output) }
-            }
+    private fun updateAll() {
+        if(relationOO.isEmpty()) return 
+        var pair: Pair<Int, Int>? = relationOO[0]
+        var root = pair!!.first
+        while(pair != null){
+            pair = relationOO.find { it.second == root }
+            root = pair?.first ?: root
         }
+        updateOO(root)
     }
 
-    fun update(position: Int) {
-        relationIO.filter { it.first == position }.forEach { io ->
-            calculate(outputsList[io.second] as Output)
-            relationOO.filter { it.first == io.second }
-                .forEach { calculate(outputsList[it.second] as Output) }
-        }
+    fun updateIO(position: Int) {
+        relationIO
+            .filter { it.first == position }
+            .forEach { io -> updateOO(io.second) }
+    }
+    
+    fun updateOO(position: Int){
+        calculate(outputsList[position] as Output)
+        relationOO
+            .filter { it.first == position }
+            .forEach { calculate(outputsList[it.second] as Output) }
     }
 
     fun connectedOutputs(position: Int): List<Int> {
@@ -275,8 +303,8 @@ class PackController(
     }
 
     fun close() {
-        if(own != true) pack?.delete()
-        
+        if (own != true) pack?.delete()
+
         own = null
         pack = null
         description = null

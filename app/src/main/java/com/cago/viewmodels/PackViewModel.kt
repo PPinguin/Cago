@@ -33,6 +33,8 @@ class PackViewModel(private val packController: PackController) : ViewModel() {
     val outputsLiveData = MutableLiveData(packController.outputsList)
     val editedInput = MutableLiveData<Int>()
     val message = MutableLiveData("")
+    
+    private val editedOutputs = mutableSetOf<Int>()
 
     var activeInputIndex = -1
     fun getActiveInput() = try {
@@ -131,7 +133,8 @@ class PackViewModel(private val packController: PackController) : ViewModel() {
 
     fun handleOutput(output: Output) =
         viewModelScope.launch(Dispatchers.Default) {
-            packController.parseFormula(output)
+            packController.handleOutput(output)
+            editedOutputs.add(packController.outputsList.indexOf(output))
         }
 
     fun getDescription() = packController.description ?: ""
@@ -143,15 +146,16 @@ class PackViewModel(private val packController: PackController) : ViewModel() {
 
     fun run() =
         viewModelScope.launch(Dispatchers.Default) {
-            if (packController.outputsList.isNotEmpty()) {
-                packController.updateAll()
-                withContext(Dispatchers.Main) { updateOutputs() }
+            editedOutputs.forEach { 
+                packController.updateOO(it)
             }
+            editedOutputs.clear()
+            withContext(Dispatchers.Main) { updateOutputs() }
         }
 
     fun update(position: Int) =
         viewModelScope.launch(Dispatchers.Default) {
-            packController.update(position)
+            packController.updateIO(position)
             withContext(Dispatchers.Main) {
                 updateOutputs()
                 editedInput.postValue(position)

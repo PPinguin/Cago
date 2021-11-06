@@ -21,7 +21,10 @@ class FormulaDialog(private val output: Output): FieldDialog() {
             it.value.setText(output.formula)
             it.value.requestFocus()
             it.ok.setOnClickListener {
-                output.formula = binding?.value?.text.toString()
+                if(output.formula != binding?.value?.text.toString()){
+                    output.value = null
+                    output.formula = binding?.value?.text.toString()
+                }
                 dismiss()
             }
         }
