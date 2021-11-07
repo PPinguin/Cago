@@ -149,10 +149,10 @@ class PackController(
         outputsList.find { it.name == name }.let {
             it == null || if (position != null) it == outputsList[position] else false
         }
-    
-    fun handleOutput(output: Output){
-        output.apply { 
-            if(parseFormula(this)){
+
+    fun handleOutput(output: Output) {
+        output.apply {
+            if (parseFormula(this)) {
                 calculate(this)
                 actions.clear()
                 actions.add(value.toString())
@@ -183,15 +183,14 @@ class PackController(
                             }
                             '@' -> {
                                 token.drop(1).toIntOrNull()?.minus(1)?.let {
-                                    if(pos == it) return true
+                                    if (pos == it) return true
                                     val s = Stack<Int>()
                                     s.push(it)
                                     while (!s.empty()) {
                                         val i = s.pop()
                                         (i to pos).let { p -> relationOO.add(p) }
                                         relationOO
-                                            .filter { oo -> oo.second == i }
-                                            .forEach { oo -> s.push(oo.first) }
+                                            .forEach { oo -> if(oo.second == i) s.push(oo.first) }
                                     }
                                     independent = false
                                 }
@@ -270,27 +269,25 @@ class PackController(
     }
 
     private fun updateAll() {
-        if(relationOO.isEmpty()) return 
-        var pair: Pair<Int, Int>? = relationOO[0]
-        var root = pair!!.first
-        while(pair != null){
-            pair = relationOO.find { it.second == root }
-            root = pair?.first ?: root
-        }
-        updateOO(root)
+        val list = (0 .. outputsList.size).toMutableList()
+        relationOO.forEach { list.remove(it.second) }
+        list.forEach { updateOO(it) }
     }
 
     fun updateIO(position: Int) {
         relationIO
-            .filter { it.first == position }
-            .forEach { io -> updateOO(io.second) }
+            .forEach { io -> if (io.first == position) updateOO(io.second) }
     }
-    
-    fun updateOO(position: Int){
-        calculate(outputsList[position] as Output)
-        relationOO
-            .filter { it.first == position }
-            .forEach { calculate(outputsList[it.second] as Output) }
+
+    fun updateOO(position: Int) {
+        val queue: Queue<Int> = LinkedList()
+        var pos = position
+        do {
+            relationOO
+                .forEach { if (it.first == pos) queue.add(it.second)}
+            calculate(outputsList[pos] as Output)
+            pos = queue.remove() 
+        } while (queue.isNotEmpty())
     }
 
     fun connectedOutputs(position: Int): List<Int> {
