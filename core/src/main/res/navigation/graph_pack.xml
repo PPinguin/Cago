@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/graph_pack"
+    app:startDestination="@id/loadingFragment">
+    <fragment
+        android:id="@+id/packFragment"
+        android:name="com.cago.pack.fragments.PackFragment"
+        android:label="fragment_pack"
+        tools:layout="@layout/fragment_pack">
+        <action
+            android:id="@+id/action_packFragment_to_editPackFragment"
+            app:destination="@id/editPackFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editPackFragment"
+        android:name="com.cago.pack.fragments.EditPackFragment"
+        android:label="EditPackFragment" />
+    <fragment
+        android:id="@+id/loadingFragment"
+        android:name="com.cago.pack.fragments.LoadingFragment"
+        android:label="fragment_loading"
+        tools:layout="@layout/fragment_loading" >
+        <action
+            android:id="@+id/action_loadingFragment_to_packFragment"
+            app:destination="@id/packFragment"
+            app:popUpTo="@id/loadingFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+</navigation>
