@@ -63,4 +63,11 @@
     <string name="warning">Warning!</string>
     <string name="link_repo">https://github.com/PPinguin/Cago</string>
     <string name="empty_menu_list">There is no package. Create new one!</string>
+    <string name="email">Email</string>
+    <string name="log_in">Log in</string>
+    <string name="go">Go</string>
+    <string name="auth_msg">Please, check your email.</string>
+    <string name="error_send_link">Log-in link wasn\'t sent. :(</string>
+    <string name="error_log_in">Unexpected error during logging in.</string>
+    <string name="repeat">Repeat</string>
 </resources>

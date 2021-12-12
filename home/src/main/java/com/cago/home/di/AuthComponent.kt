@@ -1,7 +1,8 @@
 package com.cago.home.di
 
 import com.cago.core.di.CoreModule
-import com.cago.home.activities.HomeActivity
+import com.cago.home.activities.AuthActivity
+import com.cago.home.di.RepoModule
 import dagger.Component
 import javax.inject.Singleton
 
@@ -12,6 +13,6 @@ import javax.inject.Singleton
         RepoModule::class
     ]
 )
-interface HomeComponent {
-    fun inject(activity: HomeActivity)
+interface AuthComponent {
+    fun inject(activity: AuthActivity)
 }

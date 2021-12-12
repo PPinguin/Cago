@@ -1,17 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cago.home">
-    
+
     <application>
-        <activity android:name="com.cago.home.HomeActivity"
+        <activity
+            android:name=".activities.AuthActivity"
             android:screenOrientation="portrait"
-            android:label="@string/app_name">
+            android:theme="@style/Theme.Cago"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="cago.com"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".activities.HomeActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Cago">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"/>
+        </activity>
     </application>
 
 </manifest>

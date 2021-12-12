@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.cago.core.R
-import com.cago.home.HomeActivity
+import com.cago.home.activities.HomeActivity
 import com.cago.home.adapters.MenuListAdapter
 import com.cago.core.databinding.FragmentMenuBinding
 import com.cago.home.dialogs.alerts.PackDialog
@@ -39,16 +39,6 @@ class MenuFragment : Fragment() {
         // initialize UI
         binding?.let {
             it.list.adapter = adapter
-            it.toolbar.inflateMenu(R.menu.home_menu)
-            it.toolbar.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    R.id.search -> {
-                        searchPack()
-                        true
-                    }
-                    else -> super.onOptionsItemSelected(item)
-                }
-            }
             it.fabNew.setOnClickListener { createPack() }
         }
         viewModel.message.observe(viewLifecycleOwner) { msg ->
@@ -64,10 +54,6 @@ class MenuFragment : Fragment() {
             adapter.submitList(it.toMutableList())
         }
         return binding?.root
-    }
-
-    private fun searchPack() {
-        findNavController().navigate(R.id.action_menuFragment_to_searchFragment)
     }
 
     private fun editPack(pack: Pack) {
@@ -99,14 +85,14 @@ class MenuFragment : Fragment() {
                 ).show()
             }
         } else {
-            val shareIntent = Intent.createChooser(
-                Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, viewModel.generateUri(pack))
-                    type = "text/plain"
-                }, null
-            )
-            requireActivity().startActivityFromFragment(this, shareIntent, 0)
+                val shareIntent = Intent.createChooser(
+                    Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, viewModel.generateUri(pack))
+                        type = "text/plain"
+                    }, null
+                )
+                requireActivity().startActivityFromFragment(this, shareIntent, 0)
         }
     }
 

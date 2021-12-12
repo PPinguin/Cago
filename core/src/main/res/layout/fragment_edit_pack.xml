@@ -53,16 +53,6 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageButton
-                android:id="@+id/v"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@null"
-                android:contentDescription="@string/value"
-                android:padding="8dp"
-                app:srcCompat="@drawable/ic_edit" />
-
-            <ImageButton
                 android:id="@+id/c"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,6 +61,16 @@
                 android:contentDescription="@string/copy"
                 android:padding="8dp"
                 app:srcCompat="@drawable/ic_copy" />
+            
+            <ImageButton
+                android:id="@+id/v"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:contentDescription="@string/value"
+                android:padding="8dp"
+                app:srcCompat="@drawable/ic_edit" />
 
             <Space
                 android:layout_width="64dp"

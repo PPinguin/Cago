@@ -5,6 +5,7 @@ import com.cago.core.models.Pack
 import com.cago.core.models.server.PackInfo
 import com.cago.core.repository.Repository
 import com.cago.core.repository.callbacks.Callback
+import com.cago.core.utils.BaseViewModel
 import com.cago.core.utils.ErrorType
 import com.cago.core.utils.StringProvider
 import kotlinx.coroutines.launch
@@ -12,13 +13,14 @@ import java.util.*
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
-    private val repository: Repository,
-    private val stringProvider: StringProvider
-    ) : ViewModel() {
+    stringProvider: StringProvider,
+    private val repository: Repository
+    ) : BaseViewModel(stringProvider) {
 
     val listLiveData: LiveData<List<Pack>> = repository.allPacks.asLiveData()
     val searchLiveData = MutableLiveData<List<PackInfo>>(listOf())
-    val message = MutableLiveData<String>()
+    
+    lateinit var userInfo: Map<String, String>
     
     fun createPack(name: String) =
         viewModelScope.launch { 
@@ -48,9 +50,9 @@ class HomeViewModel @Inject constructor(
     
     fun generateUri(pack: Pack): String = "http://cago.app/${repository.generatePath(pack)}"
     
-    private fun handleError(error: ErrorType?){
-        error?.let{
-            message.postValue(stringProvider.get(error.getResource()))
-        }
+    fun initUserInfo(){
+        userInfo = repository.getInfo()
     }
+
+    fun isLoggedIn(): Boolean = repository.isLoggedIn()
 }

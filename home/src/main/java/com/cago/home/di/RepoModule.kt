@@ -9,7 +9,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class HomeModule {
+class RepoModule {
     @Provides
     @Singleton
     fun repository(

@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.cago.home.HomeActivity
+import com.cago.home.activities.HomeActivity
 import com.cago.home.adapters.SearchListAdapter
 import com.cago.core.databinding.FragmentSearchBinding
 import com.cago.core.models.server.PackInfo
@@ -46,21 +47,21 @@ class SearchFragment : Fragment() {
                 }
                 override fun onQueryTextChange(newText: String?): Boolean = false
             })
+            it.searchView.setOnCloseListener { 
+                it.refresh.isRefreshing = false
+                true
+            }
             it.refresh.setOnRefreshListener {
                 with(it.searchView.query) {
                     if (isNotEmpty()) viewModel.updateSearchResults(this.toString())
                 }
             }
-            it.searchView.isIconified = false
         }
         viewModel.searchLiveData.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
             binding?.let {
                 it.refresh.isRefreshing = false
-                it.img.visibility = if (list.isEmpty())
-                    View.VISIBLE
-                else
-                    View.GONE
+                it.img.isVisible = list.isEmpty()
             }
         }
         viewModel.message.observe(viewLifecycleOwner) { msg ->

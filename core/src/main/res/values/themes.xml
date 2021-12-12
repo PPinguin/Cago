@@ -50,5 +50,21 @@
         <item name="android:textSize">8pt</item>
         <item name="android:padding">16dp</item>
     </style>
+
+    <style name="SplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@drawable/splash_screen_logo</item>
+        <item name="colorPrimaryDark">@color/white</item>
+    </style>
+    
+    <style name="AccentButton" parent="Widget.AppCompat.Button">
+        <item name="android:paddingLeft">32dp</item>
+        <item name="android:paddingRight">32dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:letterSpacing">.2</item>
+        <item name="android:background">@drawable/_background_accent</item>
+    </style>
     
 </resources>

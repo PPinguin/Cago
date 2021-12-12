@@ -6,6 +6,7 @@
         <activity
             android:screenOrientation="portrait"
             android:name="com.cago.pack.PackActivity"
+            android:theme="@style/Theme.Cago"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
