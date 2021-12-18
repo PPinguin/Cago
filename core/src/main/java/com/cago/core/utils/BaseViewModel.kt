@@ -13,4 +13,8 @@ abstract class BaseViewModel(
             message.postValue(stringProvider.get(error.getResource()))
         }
     }
+    
+    fun message(resId: Int){
+        message.postValue(stringProvider.get(resId))
+    }
 }

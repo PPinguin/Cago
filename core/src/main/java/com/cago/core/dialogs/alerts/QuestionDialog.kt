@@ -14,7 +14,7 @@ class QuestionDialog(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             AlertDialog.Builder(it).apply {
-                setTitle(question)
+                setMessage(question)
                 setPositiveButton(getString(R.string.yes)){ d, _ ->
                     listener()
                     d.dismiss()

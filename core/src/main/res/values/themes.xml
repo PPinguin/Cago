@@ -20,6 +20,7 @@
         <item name="android:fontFamily">@font/manrope</item>
         <item name="bottomSheetDialogTheme">@style/CustomBottomSheet.Theme</item>
         <item name="popupMenuBackground">@drawable/_background</item>
+        <item name="android:overScrollMode">never</item>
     </style>
 
     <style name="CustomEditText" parent="Widget.AppCompat.EditText">
@@ -47,6 +48,8 @@
     </style>
 
     <style name="Option">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">16dp</item>
         <item name="android:textSize">8pt</item>
         <item name="android:padding">16dp</item>
     </style>

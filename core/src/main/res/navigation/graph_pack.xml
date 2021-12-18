@@ -11,7 +11,11 @@
         tools:layout="@layout/fragment_pack">
         <action
             android:id="@+id/action_packFragment_to_editPackFragment"
-            app:destination="@id/editPackFragment" />
+            app:destination="@id/editPackFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out"/>
     </fragment>
     <fragment
         android:id="@+id/editPackFragment"
@@ -26,6 +30,6 @@
             android:id="@+id/action_loadingFragment_to_packFragment"
             app:destination="@id/packFragment"
             app:popUpTo="@id/loadingFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

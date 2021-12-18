@@ -55,4 +55,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun isLoggedIn(): Boolean = repository.isLoggedIn()
+    
+    fun logOut() {
+        repository.logOut()
+    }
 }

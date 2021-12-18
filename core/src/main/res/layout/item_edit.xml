@@ -17,7 +17,7 @@
         android:gravity="center"
         android:paddingHorizontal="16dp"
         android:paddingVertical="16dp"
-        android:background="@{active?@drawable/_background_selected:@drawable/_background}"
+        android:background="@{active?@drawable/_background_selected:@drawable/_background_unselected}"
         android:layout_marginTop="8dp">
 
         <TextView

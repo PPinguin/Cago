@@ -4,8 +4,9 @@
     <color name="primary">#2f89fc</color>
     <color name="black">#3e3e3e</color>
     <color name="online">#4CAF50</color>
-    <color name="offline">#CECECE</color>
-    <color name="background_l">#e4e4e4</color>
+    <color name="offline">#DDD</color>
+    <color name="background_l">#f4f4f4</color>
     <color name="white">#FFFFFF</color>
     <color name="background_d">#4e4e4e</color>
+    <color name="warning">#e96868</color>
 </resources>

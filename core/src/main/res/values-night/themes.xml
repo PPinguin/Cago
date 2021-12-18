@@ -18,5 +18,8 @@
         <item name="android:editTextStyle">@style/CustomEditText</item>
         <item name="android:fontFamily">@font/manrope</item>
         <item name="bottomSheetDialogTheme">@style/CustomBottomSheet.Theme</item>
+        <item name="android:overScrollMode">never</item>
+        <item name="popupMenuBackground">@drawable/_background</item>
+
     </style>
 </resources>

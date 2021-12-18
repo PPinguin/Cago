@@ -47,10 +47,6 @@ class SearchFragment : Fragment() {
                 }
                 override fun onQueryTextChange(newText: String?): Boolean = false
             })
-            it.searchView.setOnCloseListener { 
-                it.refresh.isRefreshing = false
-                true
-            }
             it.refresh.setOnRefreshListener {
                 with(it.searchView.query) {
                     if (isNotEmpty()) viewModel.updateSearchResults(this.toString())

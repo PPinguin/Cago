@@ -34,6 +34,15 @@
                 android:inputType="textEmailAddress"
                 android:padding="8dp" />
 
+            <TextView
+                android:id="@+id/privacy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/privacy_policy"
+                android:textColor="@color/primary"
+                android:gravity="center"
+                android:layout_margin="8dp"/>
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/msg"
                 android:layout_width="wrap_content"
