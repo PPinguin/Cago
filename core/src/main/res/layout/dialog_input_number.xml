@@ -34,7 +34,7 @@
             android:hint="@string/value"
             android:background="@null"
             android:importantForAutofill="no"
-            android:inputType="numberDecimal"
+            android:inputType="numberDecimal|numberSigned"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ok"
             app:layout_constraintStart_toStartOf="parent"

@@ -77,4 +77,5 @@
     <string name="log_out">Log out</string>
     <string name="restart_app">In oreder to apply changes restart application.</string>
     <string name="question_logout">Do you want to log out? (All packages will be deleted from device)</string>
+    <string name="no_info">No information</string>
 </resources>

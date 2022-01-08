@@ -27,7 +27,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12pt"
+                android:textSize="10pt"
+                android:hint="@string/no_info"
                 android:text="@{text}"/>
         </LinearLayout>
     </ScrollView>

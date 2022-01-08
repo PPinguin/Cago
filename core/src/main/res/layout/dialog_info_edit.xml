@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
-                android:textSize="12pt"
+                android:textSize="10pt"
                 android:background="@null"
                 android:hint="@string/info"
                 android:importantForAutofill="no" />

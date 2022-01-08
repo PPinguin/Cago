@@ -13,38 +13,48 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="16dp"
-        android:background="@{active?@drawable/_background_selected:@drawable/_background_unselected}"
-        android:layout_marginTop="8dp">
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:paddingStart="8dp">
 
         <TextView
             android:id="@+id/id"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0"
             android:textSize="12pt" />
 
-        <TextView
-            style="@style/SingleLineText"
-            android:id="@+id/name"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:textSize="12pt"
-            android:textStyle="bold"
-            android:text="@{field.name}"/>
+            android:background="@{active?@drawable/_background_selected:@drawable/_background}"
+            android:gravity="center"
+            android:layout_weight="0"
+            android:layout_marginLeft="16dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="16dp"
+            android:orientation="horizontal">
 
-        <TextView
-            style="@style/SingleLineText"
-            android:id="@+id/data"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:textSize="12pt"
-            android:textAlignment="center"
-            android:text="@{field.displayParams()}"/>
+            <TextView
+                android:id="@+id/name"
+                style="@style/SingleLineText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="@{field.name}"
+                android:textSize="12pt"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/data"
+                style="@style/SingleLineText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="@{field.displayParams()}"
+                android:textAlignment="center"
+                android:textSize="12pt" />
+        </LinearLayout>
     </LinearLayout>
 </layout>
