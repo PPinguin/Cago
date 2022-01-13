@@ -25,10 +25,8 @@ class AuthActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         (application as AuthComponentProvider).getAuthComponent().inject(this)
         viewModel.isLoggedIn()
-
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
-
         val link = intent.data?.toString()
         if (link != null) {
             binding?.apply {

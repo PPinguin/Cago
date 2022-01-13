@@ -1,6 +1,5 @@
 package com.cago.core.repository
 
-import android.util.Log
 import com.cago.core.models.Pack
 import com.cago.core.models.server.PackInfo
 import com.cago.core.repository.callbacks.Callback
@@ -32,6 +31,9 @@ class Repository(
                 }
             }
         }
+    }
+    
+    fun synchronizePackages(){
         firebaseManager.syncPackages { name, uid ->
             if (fileManager.createPack(name)) {
                 scope.launch { packDao.insert(Pack(name, uid)) }
@@ -81,6 +83,7 @@ class Repository(
     
     fun logIn(link: String, callback: Callback<Nothing>){
         firebaseManager.logIn(link, callback)
+        synchronizePackages()
     }
     
     fun sendLink(email: String, callback: Callback<Nothing>){

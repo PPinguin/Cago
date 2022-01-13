@@ -66,16 +66,13 @@ class FirebaseManager @Inject constructor(override val context: Context) : Manag
                     snapshot.children.forEach { child ->
                         child.child("name").getValue<String>()?.let{ name ->
                             sync(name, child.key!!)?.let { file ->
-                                Log.d("debugging", "$file")
                                 stRef.child("packages/$UID/$name.cg").getFile(file)
                             }
                         }
                     }
                 }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.d("debugging", "$error")
-                }
+                override fun onCancelled(error: DatabaseError) {}
             })
     }
 

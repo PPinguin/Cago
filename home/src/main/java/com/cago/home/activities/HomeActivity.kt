@@ -22,19 +22,14 @@ class HomeActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModel: HomeViewModel
-    
     private var binding: ActivityHomeBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         (application as HomeComponentProvider).getHomeComponent().inject(this)
-        if (!viewModel.isLoggedIn()) {
-            startActivity(Intent(this, AuthActivity::class.java))
-            finish()
-        } else {
-            viewModel.initUserInfo()
-        }
+        if (!viewModel.isLoggedIn()) { toAuth() } 
+        else { viewModel.initUserInfo() }
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         setupUI()
@@ -50,6 +45,7 @@ class HomeActivity : AppCompatActivity() {
             navView.setNavigationItemSelectedListener { 
                 when(it.itemId){
                     R.id.search -> toSearch() 
+                    R.id.sync -> sync()
                     R.id.docs -> docs()
                     R.id.contact -> contact()
                     R.id.privacy -> privacy()
@@ -58,7 +54,8 @@ class HomeActivity : AppCompatActivity() {
                 true
             }
             logout.setOnClickListener { 
-                logOut()   
+                logOut()
+                toAuth()
             }
         }
         supportActionBar?.apply{
@@ -66,6 +63,15 @@ class HomeActivity : AppCompatActivity() {
             setDisplayHomeAsUpEnabled(true)
             setHomeButtonEnabled(true)
         }
+    }
+    
+    private fun toAuth(){
+        startActivity(Intent(this, AuthActivity::class.java))
+        finish()
+    }
+
+    private fun sync() {
+        viewModel.sync()
     }
 
     private fun toSearch() {
