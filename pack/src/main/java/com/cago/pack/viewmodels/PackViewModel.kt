@@ -1,7 +1,6 @@
 package com.cago.pack.viewmodels
 
 import android.os.Bundle
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.cago.core.models.logic.Input
@@ -30,6 +29,8 @@ class PackViewModel @Inject constructor(
     private val editedOutputs = mutableSetOf<Int>()
 
     var activeInputIndex = -1
+    var changed = false
+    
     fun getActiveInput() = try {
         packController.inputsList[activeInputIndex] as Input
     } catch (e: Exception) {
@@ -67,13 +68,17 @@ class PackViewModel @Inject constructor(
             updateInputs()
             updateOutputs()
             pack.postValue(name)
+            changed = false
         }
     }
+    
+    private fun changed(){changed = true}
 
     fun addInput(name: String, type: InputType): Boolean =
         if (packController.notContainsInput(name)) {
             packController.createInput(name, type)
             updateInputs()
+            changed()
             true
         } else false
 
@@ -81,12 +86,14 @@ class PackViewModel @Inject constructor(
         if (packController.notContainsInput(name, packController.inputsList.indexOf(input))) {
             packController.editInput(input, name, type)
             updateInputs()
+            changed()
             true
         } else false
 
     fun deleteInput(input: Input) {
         packController.deleteInput(input)
         updateInputs()
+        changed()
     }
     
     fun getInput(index: Int) = packController.inputsList[index]
@@ -99,6 +106,7 @@ class PackViewModel @Inject constructor(
         if (packController.notContainsOutput(name)) {
             packController.createOutput(name, visible, formula ?: "")
             updateOutputs()
+            changed()
             true
         } else false
 
@@ -106,12 +114,14 @@ class PackViewModel @Inject constructor(
         if (packController.notContainsOutput(name, packController.outputsList.indexOf(output))) {
             packController.editOutput(output, name, visible)
             updateOutputs()
+            changed()
             true
         } else false
 
     fun deleteOutput(output: Output) {
         packController.deleteOutput(output)
         updateOutputs()
+        changed()
     }
 
     fun getOutputIndex(output: Output) = packController.outputsList.indexOf(output)
@@ -120,7 +130,6 @@ class PackViewModel @Inject constructor(
 
     private fun updateOutputs() {
         outputsLiveData.postValue(packController.outputsList)
-        Log.d("debugging_vm", "${outputsLiveData.value}")
     }
 
     fun handleOutput(output: Output) =
@@ -153,10 +162,10 @@ class PackViewModel @Inject constructor(
         }
 
     @DelicateCoroutinesApi
-    fun closePack() {
+    fun closePack(save: Boolean) {
         GlobalScope.launch { 
             packController.savePack()
-            packController.close()
+            if(save) packController.close()
         }
         activeInputIndex = -1
         activeOutputIndex = -1

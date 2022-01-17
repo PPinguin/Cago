@@ -1,7 +1,6 @@
 package com.cago.core.repository
 
 import android.os.Bundle
-import android.util.Log
 import com.cago.core.models.logic.Field
 import com.cago.core.models.logic.Input
 import com.cago.core.models.logic.Output

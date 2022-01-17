@@ -12,7 +12,6 @@ import com.cago.core.databinding.ItemMenuBinding
 import com.cago.core.models.Pack
 
 class MenuListAdapter(
-    val context: Context,
     val onClick: (Pack) -> Unit,
     val onActionClick: (Pack) -> Unit
 ) :
@@ -32,6 +31,7 @@ class MenuListAdapter(
             binding.apply {
                 name.text = p.name
                 uploaded = p.key != null
+                actual = p.actual
                 action.setOnClickListener { onActionClick(p) }
                 root.setOnClickListener { onClick(p) }
             }

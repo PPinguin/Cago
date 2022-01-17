@@ -11,5 +11,7 @@ data class Pack(
     @ColumnInfo(name="key")  var key: String?
 ){
     @PrimaryKey(autoGenerate = true) var uid: Int = 0
+    @ColumnInfo(name="actual") var actual: Boolean = false 
+        set(value) { field = (key != null) && value }
     fun getInfo() = if(key != null) PackInfo(name, key) else null
 }

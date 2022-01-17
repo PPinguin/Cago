@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="close_pack_question">Would you like to save changes?</string>
+    <string name="close_question">Close question</string>
+</resources>

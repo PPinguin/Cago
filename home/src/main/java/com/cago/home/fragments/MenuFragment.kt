@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.cago.core.R
 import com.cago.home.activities.HomeActivity
 import com.cago.home.adapters.MenuListAdapter
@@ -28,7 +27,7 @@ class MenuFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = (requireActivity() as HomeActivity).viewModel
-        adapter = MenuListAdapter(requireContext(), this::openPack, this::editPack)
+        adapter = MenuListAdapter(this::openPack, this::editPack)
     }
 
     override fun onCreateView(

@@ -36,7 +36,7 @@ class Repository(
     fun synchronizePackages(){
         firebaseManager.syncPackages { name, uid ->
             if (fileManager.createPack(name)) {
-                scope.launch { packDao.insert(Pack(name, uid)) }
+                scope.launch { packDao.insert(Pack(name, uid).also { it.actual = true }) }
                 fileManager.getFile(name)
             } else null
         }
@@ -70,7 +70,10 @@ class Repository(
         firebaseManager.uploadPack(fileManager.getFile(pack.name), object : Callback<String> {
             override fun success(data: String?) {
                 scope.launch { 
-                    packDao.update(pack.also { it.key = data })
+                    packDao.update(pack.also { 
+                        it.key = data
+                        it.actual = true
+                    })
                 }
             }
             override fun failure(error: ErrorType?) {

@@ -6,7 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.navigation.findNavController
+import com.cago.core.dialogs.alerts.QuestionDialog
 import com.cago.pack.di.provider.PackComponentProvider
 import com.cago.pack.viewmodels.PackViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -18,23 +18,13 @@ class PackActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         (application as PackComponentProvider).getPackComponent().inject(this)
         setContentView(R.layout.activity_pack)
-        
-    }
-
-    override fun onStart() {
-        super.onStart()
-        findNavController(R.id.nav_host_fragment)
-            .addOnDestinationChangedListener { _, destination, _ ->
-                if(destination.id == R.id.packFragment) viewModel.run()
-            }
     }
 
     @DelicateCoroutinesApi
     override fun onDestroy() {
-        if (isFinishing) viewModel.closePack()
         super.onDestroy()
     }
 
@@ -45,5 +35,26 @@ class PackActivity : AppCompatActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         viewModel.message(com.cago.core.R.string.restart_app)
+    }
+
+    @DelicateCoroutinesApi
+    override fun onBackPressed() { 
+        if(supportFragmentManager.backStackEntryCount == 0) {
+            var save = false
+            if (viewModel.changed && viewModel.isOwnUser() == true) {
+                QuestionDialog({
+                    save = true
+                }, getString(R.string.close_pack_question)).also { 
+                    it.setOnAccepted {
+                        viewModel.closePack(save)
+                        super.onBackPressed()
+                    }
+                }
+                    .show(supportFragmentManager, getString(R.string.close_question))
+            } else {
+                viewModel.closePack(save)
+                super.onBackPressed()
+            }
+        }
     }
 }
