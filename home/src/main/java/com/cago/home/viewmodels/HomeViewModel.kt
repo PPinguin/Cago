@@ -19,8 +19,11 @@ class HomeViewModel @Inject constructor(
 
     val listLiveData: LiveData<List<Pack>> = repository.allPacks.asLiveData()
     val searchLiveData = MutableLiveData<List<PackInfo>>(listOf())
+    var loggedIn = MutableLiveData<Boolean?>(null)
     
-    lateinit var userInfo: Map<String, String>
+    var userInfo: Map<String, String>? = null
+    
+    fun init(){ loggedIn.postValue(repository.isLoggedIn()) }
     
     fun createPack(name: String) =
         viewModelScope.launch { 
@@ -37,6 +40,11 @@ class HomeViewModel @Inject constructor(
             repository.uploadPack(pack, this@HomeViewModel::handleError)
         }
 
+    fun deactualizatePack(name: String) =
+        viewModelScope.launch { 
+            repository.deactualizate(name)
+        }
+    
     fun updateSearchResults(query: String) = 
         viewModelScope.launch {
             repository.search(query, object: Callback<List<PackInfo>>{
@@ -53,10 +61,10 @@ class HomeViewModel @Inject constructor(
     fun initUserInfo(){
         userInfo = repository.getInfo()
     }
-
-    fun isLoggedIn(): Boolean = repository.isLoggedIn()
     
-    fun logOut() { repository.logOut() }
+    fun logOut() { repository.logOut{
+        loggedIn.postValue(false)
+    } }
 
     fun sync() { repository.synchronizePackages() }
 }

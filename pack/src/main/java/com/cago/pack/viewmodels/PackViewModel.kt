@@ -163,9 +163,9 @@ class PackViewModel @Inject constructor(
 
     @DelicateCoroutinesApi
     fun closePack(save: Boolean) {
-        GlobalScope.launch { 
-            packController.savePack()
-            if(save) packController.close()
+        GlobalScope.launch {
+            if(save) packController.savePack()
+            packController.close()
         }
         activeInputIndex = -1
         activeOutputIndex = -1

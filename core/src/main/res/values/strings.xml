@@ -80,4 +80,5 @@
     <string name="no_info">No information</string>
     <string name="publication">Public</string>
     <string name="sync">Sync projects</string>
+    <string name="unknown">unidentified</string>
 </resources>

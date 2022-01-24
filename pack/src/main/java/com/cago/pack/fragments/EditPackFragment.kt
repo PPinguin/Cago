@@ -1,8 +1,6 @@
 package com.cago.pack.fragments
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,12 +40,14 @@ class EditPackFragment : Fragment() {
         binding?.let {
             it.pager.adapter = adapter
             it.toolbar.apply {
-                title = "${viewModel.pack.value} *"
+                title = "${viewModel.pack.value} (edit)"
                 inflateMenu(R.menu.pack_menu)
                 overflowIcon =
                     ContextCompat.getDrawable(requireContext(), R.drawable.ic_options)
                 setNavigationIcon(R.drawable.ic_less)
-                setNavigationOnClickListener { runPack() }
+                setNavigationOnClickListener {
+                    findNavController().popBackStack()
+                }
                 setOnMenuItemClickListener { item ->
                     when (item.itemId) {
                         R.id.info -> {
@@ -107,10 +107,6 @@ class EditPackFragment : Fragment() {
                     getString(R.string.output)
                 )
         }
-    }
-
-    private fun runPack() {
-        findNavController().popBackStack()
     }
 
     private fun editInfo() {

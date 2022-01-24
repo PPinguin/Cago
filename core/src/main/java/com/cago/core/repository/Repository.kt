@@ -1,5 +1,6 @@
 package com.cago.core.repository
 
+import android.util.Log
 import com.cago.core.models.Pack
 import com.cago.core.models.server.PackInfo
 import com.cago.core.repository.callbacks.Callback
@@ -12,7 +13,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import javax.inject.Singleton
 
+@Singleton
 class Repository(
     val packDao: PackDao,
     private val firebaseManager: FirebaseManager,
@@ -60,6 +63,13 @@ class Repository(
         else handle(ErrorType.ERROR_DELETE)
     }
     
+    fun deactualizate(name: String){
+        Log.d("debugging", name)
+        scope.launch { 
+            packDao.update(packDao.getByName(name).also { it.actual = false })
+        }
+    }
+    
     fun search(query: String, callback: Callback<List<PackInfo>>) {
         firebaseManager.searchByQuery(query, callback)
     }
@@ -86,22 +96,22 @@ class Repository(
     
     fun logIn(link: String, callback: Callback<Nothing>){
         firebaseManager.logIn(link, callback)
-        synchronizePackages()
     }
     
     fun sendLink(email: String, callback: Callback<Nothing>){
         firebaseManager.sendLink(email, callback)
     }
     
-    fun logOut(){
+    fun logOut(update: ()->Unit){
         scope.launch {
-            packDao.getList().forEach {                 
+            packDao.getList().forEach {
                 fileManager.deletePack(it.name)
                 packDao.delete(it)
             }
+            firebaseManager.logOut()
+            update()
         }
-        firebaseManager.logOut() 
     }
     
-    fun getInfo() = firebaseManager.getCurrentInfo() ?: emptyMap()
+    fun getInfo() = firebaseManager.getCurrentInfo()
 }

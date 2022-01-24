@@ -7,6 +7,9 @@
         <variable
             name="uploaded"
             type="Boolean" />
+        <variable
+            name="actual"
+            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -58,8 +61,8 @@
             android:id="@+id/indicator"
             android:layout_width="12dp"
             android:layout_height="12dp"
-            android:background="@drawable/indicator"
-            android:backgroundTint="@{uploaded? @color/secondary :@color/offline}"
+            android:background="@drawable/indicator_fill"
+            android:backgroundTint="@{uploaded ? ( actual ? @color/secondary : @color/primary ) : @color/offline}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

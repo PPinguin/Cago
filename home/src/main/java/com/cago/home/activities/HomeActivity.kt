@@ -1,10 +1,12 @@
 package com.cago.home.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatTextView
@@ -23,28 +25,47 @@ class HomeActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModel: HomeViewModel
     private var binding: ActivityHomeBinding? = null
+    
+    private val activityForResult = 
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+            if(result.resultCode == Activity.RESULT_OK){
+                result.data?.extras?.let { 
+                    if(it.getBoolean("actual")) 
+                        viewModel.deactualizatePack(it.getString("name", ""))
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         (application as HomeComponentProvider).getHomeComponent().inject(this)
-        if (!viewModel.isLoggedIn()) { toAuth() } 
-        else { viewModel.initUserInfo() }
+        viewModel.init()
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         setupUI()
     }
-    
+
     private fun setupUI() {
+        viewModel.loggedIn.observe(this) {
+            if (it == false) {
+                startActivity(Intent(this, AuthActivity::class.java))
+                finish()
+            } else {
+                viewModel.initUserInfo()
+                binding?.navView?.getHeaderView(0)
+                    ?.findViewById<AppCompatTextView>(R.id.email)?.text =
+                    viewModel.userInfo?.get("email") ?: getString(R.string.unknown)
+            }
+        }
         binding?.apply {
             setSupportActionBar(toolbar)
             navView.inflateHeaderView(R.layout.nav_header)
-                .apply {
-                    findViewById<AppCompatTextView>(R.id.email).text = viewModel.userInfo["email"]
-                }
-            navView.setNavigationItemSelectedListener { 
-                when(it.itemId){
-                    R.id.search -> toSearch() 
+                .findViewById<AppCompatTextView>(R.id.email).text =
+                viewModel.userInfo?.get("email") ?: getString(R.string.unknown)
+            navView.setNavigationItemSelectedListener {
+                when (it.itemId) {
+                    R.id.search -> toSearch()
                     R.id.sync -> sync()
                     R.id.docs -> docs()
                     R.id.contact -> contact()
@@ -53,21 +74,15 @@ class HomeActivity : AppCompatActivity() {
                 drawerLayout.closeDrawer(navView)
                 true
             }
-            logout.setOnClickListener { 
+            logout.setOnClickListener {
                 logOut()
-                toAuth()
             }
         }
-        supportActionBar?.apply{
+        supportActionBar?.apply {
             setHomeAsUpIndicator(R.drawable.ic_burger)
             setDisplayHomeAsUpEnabled(true)
             setHomeButtonEnabled(true)
         }
-    }
-    
-    private fun toAuth(){
-        startActivity(Intent(this, AuthActivity::class.java))
-        finish()
     }
 
     private fun sync() {
@@ -76,28 +91,29 @@ class HomeActivity : AppCompatActivity() {
 
     private fun toSearch() {
         findNavController(R.id.nav_host_fragment).apply {
-            if(currentDestination?.id != R.id.searchFragment) 
+            if (currentDestination?.id != R.id.searchFragment)
                 navigate(R.id.action_menuFragment_to_searchFragment)
         }
     }
 
     private fun contact() {
         startActivity(
-            Intent(Intent.ACTION_SENDTO).apply { 
+            Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
                 putExtra(Intent.EXTRA_EMAIL, "pinguin.dev3712@gmail.com")
             }
         )
     }
-    
-    private fun privacy(){
+
+    private fun privacy() {
         startActivity(
-            Intent(Intent.ACTION_VIEW, Uri.parse(getString(com.cago.pack.R.string.link_privacy_policy)))
+            Intent(Intent.ACTION_VIEW,
+                Uri.parse(getString(com.cago.pack.R.string.link_privacy_policy)))
         )
     }
 
     fun openPack(name: String, extra: Bundle? = null) {
-        startActivity(
+        activityForResult.launch(
             Intent(this, PackActivity::class.java).apply {
                 putExtras(
                     bundleOf("name" to name).also {
@@ -122,10 +138,10 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             android.R.id.home -> {
-                binding?.apply { 
-                    if(!drawerLayout.isDrawerOpen(navView)) drawerLayout.openDrawer(navView)
+                binding?.apply {
+                    if (!drawerLayout.isDrawerOpen(navView)) drawerLayout.openDrawer(navView)
                     else drawerLayout.closeDrawer(navView)
                 }
             }

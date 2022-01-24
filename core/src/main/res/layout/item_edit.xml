@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tool="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -20,9 +21,10 @@
 
         <TextView
             android:id="@+id/id"
-            android:layout_width="wrap_content"
+            android:layout_width="48dp"
             android:layout_height="wrap_content"
             android:layout_weight="0"
+            android:gravity="center"
             android:textSize="12pt" />
 
         <LinearLayout
@@ -41,7 +43,7 @@
                 style="@style/SingleLineText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
+                android:layout_weight="1"
                 android:text="@{field.name}"
                 android:textSize="12pt"
                 android:textStyle="bold" />
@@ -51,7 +53,7 @@
                 style="@style/SingleLineText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
+                android:layout_weight="1"
                 android:text="@{field.displayParams()}"
                 android:textAlignment="center"
                 android:textSize="12pt" />

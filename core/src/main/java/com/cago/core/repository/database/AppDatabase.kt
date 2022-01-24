@@ -1,12 +1,16 @@
 package com.cago.core.repository.database
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.cago.core.models.Pack
 
-@Database(entities = [Pack::class], version = 1, exportSchema = false)
+@Database(
+    version = 2, 
+    entities = [Pack::class]
+)
 abstract class 
 AppDatabase: RoomDatabase() {
     
@@ -22,7 +26,9 @@ AppDatabase: RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "packages-database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 database = db
                 db
             }
