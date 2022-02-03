@@ -1,12 +1,11 @@
 package com.cago.pack.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.cago.pack.PackActivity
+import com.cago.pack.activities.PackActivity
 import com.cago.pack.adapters.PackFragmentsAdapter
 import com.cago.core.databinding.FragmentPackBinding
 import com.cago.core.R
@@ -73,6 +72,11 @@ class PackFragment : Fragment() {
         return binding?.root
     }
 
+    override fun onStart() {
+        super.onStart()
+        binding?.pager?.setCurrentItem(0, false)
+    }
+    
     private fun editPack() {
         findNavController()
             .navigate(R.id.action_packFragment_to_editPackFragment)

@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.cago.core.R
 import com.cago.core.databinding.FragmentEditPackBinding
-import com.cago.pack.PackActivity
+import com.cago.pack.activities.PackActivity
 import com.cago.pack.adapters.EditPackFragmentsAdapter
 import com.cago.pack.dialogs.alerts.InputDialog
 import com.cago.pack.dialogs.alerts.OutputDialog
@@ -40,7 +40,7 @@ class EditPackFragment : Fragment() {
         binding?.let {
             it.pager.adapter = adapter
             it.toolbar.apply {
-                title = "${viewModel.pack.value} (edit)"
+                title = viewModel.pack.value
                 inflateMenu(R.menu.pack_menu)
                 overflowIcon =
                     ContextCompat.getDrawable(requireContext(), R.drawable.ic_options)

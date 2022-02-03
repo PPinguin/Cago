@@ -1,6 +1,5 @@
 package com.cago.core.repository
 
-import android.util.Log
 import com.cago.core.models.Pack
 import com.cago.core.models.server.PackInfo
 import com.cago.core.repository.callbacks.Callback
@@ -64,7 +63,6 @@ class Repository(
     }
     
     fun deactualizate(name: String){
-        Log.d("debugging", name)
         scope.launch { 
             packDao.update(packDao.getByName(name).also { it.actual = false })
         }

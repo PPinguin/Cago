@@ -17,7 +17,7 @@ import com.cago.core.databinding.ActivityHomeBinding
 import com.cago.core.dialogs.alerts.QuestionDialog
 import com.cago.home.di.providers.HomeComponentProvider
 import com.cago.home.viewmodels.HomeViewModel
-import com.cago.pack.PackActivity
+import com.cago.pack.activities.PackActivity
 import javax.inject.Inject
 
 class HomeActivity : AppCompatActivity() {

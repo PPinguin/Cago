@@ -1,9 +1,10 @@
 package com.cago.core.models.logic.fields
 
 import com.cago.core.models.logic.Input
+import com.cago.core.utils.InputType
 
 class PercentInput(name: String) : Input(name) {
-    override val type = com.cago.core.utils.InputType.Percent
+    override val type = InputType.Percent
     override fun setValue(value: String) {
         this.value = value.removeSuffix("%").toDoubleOrNull()?.div(100)
     }

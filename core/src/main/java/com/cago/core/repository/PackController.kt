@@ -33,7 +33,7 @@ class PackController(
 
     fun openPack(data: Bundle, callback: Callback<File>) {
         val name = data.getString("name")!!
-        if (data.containsKey("path") && data.getString("path", null) != UID) {
+        if (data.containsKey("path")) {
                 firebaseManager.downloadPack(
                     data.getString("name", "-"),
                     data.getString("path", "-"),

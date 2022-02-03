@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.cago.core.R
-import com.cago.pack.PackActivity
+import com.cago.pack.activities.PackActivity
 import com.cago.pack.adapters.lists.PackListAdapter
 import com.cago.core.databinding.FragmentPackageListBinding
 import com.cago.core.models.logic.Output

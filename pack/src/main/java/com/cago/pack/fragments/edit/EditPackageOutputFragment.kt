@@ -1,13 +1,12 @@
 package com.cago.pack.fragments.edit
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.cago.core.R
-import com.cago.pack.PackActivity
+import com.cago.pack.activities.PackActivity
 import com.cago.pack.adapters.lists.EditPackListAdapter
 import com.cago.core.databinding.FragmentPackageListBinding
 import com.cago.core.dialogs.alerts.QuestionDialog
@@ -37,7 +36,6 @@ class EditPackageOutputFragment : Fragment(), EditPackageFragment {
         )
         viewModel.outputsLiveData.observe(viewLifecycleOwner) {
             editPackListAdapter.submitList(it.toMutableList())
-            Log.d("debugging_fr", "$it")
             binding?.label?.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
         }
         binding?.let {

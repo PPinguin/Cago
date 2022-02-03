@@ -56,7 +56,7 @@
     <string name="output_edit">Output (edit)</string>
     <string name="output_copy">Output (copy)</string>
     <string name="question_delete">Delete \"%s\"?</string>
-    <string name="help">Help</string>
+    <string name="help">Documentation</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="error_initializing">At first start app must has Internet connection in case of initializing user.</string>
@@ -72,10 +72,10 @@
     <string name="error_send_link">Log-in link was not sent. :(</string>
     <string name="error_log_in">Unexpected error during logging in.</string>
     <string name="repeat">Repeat</string>
-    <string name="contact">Contact us</string>
+    <string name="contact">Contact developer</string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="log_out">Log out</string>
-    <string name="restart_app">In oreder to apply changes restart application.</string>
+    <string name="restart_app">In order to apply changes restart application.</string>
     <string name="question_logout">Do you want to log out? (All packages will be deleted from device)</string>
     <string name="no_info">No information</string>
     <string name="publication">Public</string>

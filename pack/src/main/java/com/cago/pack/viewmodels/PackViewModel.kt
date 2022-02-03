@@ -134,6 +134,7 @@ class PackViewModel @Inject constructor(
 
     fun handleOutput(output: Output) =
         viewModelScope.launch(Dispatchers.Default) {
+            changed()
             editedOutputs.add(packController.outputsList.indexOf(output))
             packController.handleOutput(output)
         }

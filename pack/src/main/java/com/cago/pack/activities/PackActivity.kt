@@ -1,4 +1,4 @@
-package com.cago.pack
+package com.cago.pack.activities
 
 import android.app.Activity
 import android.content.Intent
@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.cago.core.dialogs.alerts.QuestionDialog
+import com.cago.pack.R
 import com.cago.pack.di.provider.PackComponentProvider
 import com.cago.pack.viewmodels.PackViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
