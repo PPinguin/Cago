@@ -10,6 +10,7 @@ Cago has package controll system, that lets you manage your data easily. Everyth
 .. note:: Edit package can only its owner.
 
 The indicator of package show its state:
+
 #. **green**: actual version of package is uploaded.
 #. **blue**: not actual version of package is uploaded.
 #. **gray**: no version of package is uploaded
