@@ -51,7 +51,7 @@ class PackActivity : AppCompatActivity() {
                                 Activity.RESULT_OK,
                                 Intent().apply {
                                     putExtra("name", viewModel.pack.value)
-                                    putExtra("actual", viewModel.changed)
+                                    putExtra("actual", save)
                                 }
                             )
                             super.onBackPressed()   

@@ -50,7 +50,7 @@
     <string name="error_open">Package cannot be opened</string>
     <string name="error_results">Results cannot be loaded</string>
     <string name="error_share">Package \"%s\" must be uploaded firstly.</string>
-    <string name="error_field_not_chosen">Choose please field firstly.</string>
+    <string name="error_field_not_chosen">Choose field firstly.</string>
     <string name="input_edit">Input (edit)</string>
     <string name="input_copy">Input (copy)</string>
     <string name="output_edit">Output (edit)</string>
@@ -64,11 +64,11 @@
     <string name="warning">Warning!</string>
     <string name="link_repo">https://cago.readthedocs.io/en/latest/</string>
     <string name="link_privacy_policy">https://docs.google.com/document/d/16mpSKnn7tO0x6g61Adhe4R32yHolV4Ebx6etHL82jQo/edit?usp=sharing</string>
-    <string name="empty_menu_list">There is no package. Create new one!</string>
+    <string name="empty_menu_list">There is no package. You can create new one!</string>
     <string name="email">Email</string>
     <string name="log_in">Log in</string>
     <string name="go">Go</string>
-    <string name="auth_msg">Please, check your email.</string>
+    <string name="auth_msg">Check your email.</string>
     <string name="error_send_link">Log-in link was not sent. :(</string>
     <string name="error_log_in">Unexpected error during logging in.</string>
     <string name="repeat">Repeat</string>
@@ -76,7 +76,7 @@
     <string name="privacy_policy">Privacy policy</string>
     <string name="log_out">Log out</string>
     <string name="restart_app">In order to apply changes restart application.</string>
-    <string name="question_logout">Do you want to log out? (All packages will be deleted from device)</string>
+    <string name="question_logout">Log out? All packages will be deleted from device!</string>
     <string name="no_info">No information</string>
     <string name="publication">Public</string>
     <string name="sync">Sync projects</string>
