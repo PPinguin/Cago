@@ -9,12 +9,11 @@ Cago has package controll system, that lets you manage your data easily. Everyth
 
 .. note:: Edit package can only its owner.
 
-Package consists of:
+The indicator of package show its state:
 
-* Author's UID.
-* List of input fileds.
-* List of output fields.
-* Description.
+#. **green**: actual version of package is uploaded.
+#. **blue**: not actual version of package is uploaded.
+#. **gray**: no version of package is uploaded
 
 Using
 #####
