@@ -96,12 +96,17 @@ class PackViewModel @Inject constructor(
         changed()
     }
     
+    fun defaultInput(input: Input){
+        input.updateDefault()
+        changed()
+    }
+    
     fun getInput(index: Int) = packController.inputsList[index]
 
     private fun updateInputs() {
         inputsLiveData.postValue(packController.inputsList)
     }
-
+    
     fun addOutput(name: String, visible: Boolean, formula: String? = null) =
         if (packController.notContainsOutput(name)) {
             packController.createOutput(name, visible, formula ?: "")
@@ -142,6 +147,7 @@ class PackViewModel @Inject constructor(
     fun getDescription() = packController.description ?: ""
     fun setDescription(text: String) {
         packController.description = text
+        changed()
     }
 
     fun isOwnUser() = packController.own
@@ -150,6 +156,7 @@ class PackViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Default) {
             editedOutputs.forEach { packController.updateOO(it) }
             editedOutputs.clear()
+            packController.extractVisibleOutputs()
             withContext(Dispatchers.Main) { updateOutputs() }
         }
 
@@ -157,18 +164,19 @@ class PackViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Default) {
             packController.updateIO(position)
             withContext(Dispatchers.Main) {
-                updateOutputs()
                 editedInput.postValue(position)
             }
         }
 
     @DelicateCoroutinesApi
-    fun closePack(save: Boolean) {
-        GlobalScope.launch {
+    fun closePack(save: Boolean, exit: () -> Unit) = 
+        GlobalScope.launch(Dispatchers.IO) {
             if(save) packController.savePack()
             packController.close()
+            activeInputIndex = -1
+            activeOutputIndex = -1
+            withContext(Dispatchers.Main) {
+                exit()
+            }
         }
-        activeInputIndex = -1
-        activeOutputIndex = -1
-    }
 }

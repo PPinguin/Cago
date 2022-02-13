@@ -45,10 +45,6 @@ class PackFragment : Fragment() {
                             openInfo()
                             true
                         }
-                        R.id.help -> {
-                            (requireActivity() as PackActivity).help()
-                            true
-                        }
                         else -> super.onOptionsItemSelected(item)
                     }
                 }

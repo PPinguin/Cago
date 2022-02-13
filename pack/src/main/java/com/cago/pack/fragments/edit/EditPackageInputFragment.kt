@@ -52,7 +52,11 @@ class EditPackageInputFragment : Fragment(), EditPackageFragment {
 
     override fun valueField() {
         viewModel.getActiveInput()?.let { 
-            FieldDialog.buildDialog(it)
+            FieldDialog.buildDialog(it)?.apply { 
+                setOnAccepted { 
+                    viewModel.defaultInput(it)
+                }
+            }
                 ?.show(requireActivity().supportFragmentManager, getString(R.string.input))
         }
     }

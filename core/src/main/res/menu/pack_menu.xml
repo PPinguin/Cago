@@ -4,9 +4,6 @@
     <item
         android:id="@+id/info"
         android:title="@string/info"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/help"
-        android:title="@string/help"
-        app:showAsAction="never"/>
+        android:icon="@drawable/ic_note"
+        app:showAsAction="ifRoom"/>
 </menu>

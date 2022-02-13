@@ -9,5 +9,5 @@ class FieldDiffCallback : DiffUtil.ItemCallback<Field>() {
         oldItem.hashCode() == newItem.hashCode()
 
     override fun areContentsTheSame(oldItem: Field, newItem: Field): Boolean =
-        oldItem.equal(newItem)
+        oldItem.value == newItem.value
 }

@@ -3,7 +3,6 @@ package com.cago.pack.activities
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
-import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -33,10 +32,6 @@ class PackActivity : AppCompatActivity() {
         navController = findNavController(R.id.nav_host_fragment)
     }
 
-    fun help() {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.link_repo))))
-    }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         viewModel.message(com.cago.core.R.string.restart_app)
@@ -51,21 +46,23 @@ class PackActivity : AppCompatActivity() {
                     save = true              
                 }, getString(R.string.close_pack_question)).also { 
                     it.setOnAccepted {
-                        viewModel.closePack(save)
-                        setResult(
-                            Activity.RESULT_OK,
-                            Intent().apply { 
-                                putExtra("name", viewModel.pack.value)
-                                putExtra("actual", viewModel.changed)
-                            }
-                        )
-                        super.onBackPressed()
+                        viewModel.closePack(save) {
+                            setResult(
+                                Activity.RESULT_OK,
+                                Intent().apply {
+                                    putExtra("name", viewModel.pack.value)
+                                    putExtra("actual", viewModel.changed)
+                                }
+                            )
+                            super.onBackPressed()   
+                        }
                     }
                 }
                     .show(supportFragmentManager, getString(R.string.close_question))
             } else {
-                viewModel.closePack(false)
-                super.onBackPressed()
+                viewModel.closePack(false){
+                    super.onBackPressed()
+                }
             }
         } else super.onBackPressed()
     }

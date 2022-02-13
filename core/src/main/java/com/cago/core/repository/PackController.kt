@@ -31,6 +31,8 @@ class PackController(
     private val relationIO = mutableListOf<Pair<Int, Int>>()
     private val relationOO = mutableListOf<Pair<Int, Int>>()
 
+    private val visibleOutputs = mutableListOf<Int>()
+
     fun openPack(data: Bundle, callback: Callback<File>) {
         val name = data.getString("name")!!
         if (data.containsKey("path")) {
@@ -53,22 +55,26 @@ class PackController(
     fun savePack(): Boolean {
         if (own != true) return false
         pack?.writeText("")
+        val content = StringBuilder("$UID\n") 
         return try {
-            pack?.appendText("$UID\n")
             inputsList.forEach { input ->
                 input as Input
-                pack?.appendText("> ${input.name} ${input.type} ${input.displayValue()}\n") 
+                input.setDefaultValue()
+                content.append(
+                    ">|${input.name}|${input.type}|${input.displayValue()}\n"
+                ) 
             }
             outputsList.forEach { output ->
                 output as Output
-                pack?.appendText(
-                    "${if (output.visible) '+' else '-'} ${output.name} ${output.formula}\n"
+                content.append(
+                    "${if (output.visible) '+' else '-'}|${output.name}|${output.formula}\n"
                 )
             }
             description?.let {
-                pack?.appendText("###\n")
-                pack?.appendText(it)
+                content.append("###\n")
+                content.append(it)
             }
+            pack?.writeText(content.toString())
             true
         } catch (e: Exception) {
             false
@@ -82,12 +88,16 @@ class PackController(
             pack?.forEachLine { line ->
                 if (own == null) own = line == UID
                 else if (!end) {
-                    val params = line.split(" ")
+                    val params = line.split("|")
                     when (params[0]) {
                         ">" -> {
                             createInput(params[1], InputType.valueOf(params[2]))
-                            if (params.size > 3 && params[3].isNotEmpty())
-                                (inputsList.last() as Input).setValue(params[3])
+                            if (params.size > 3 && params[3].isNotEmpty()) {
+                                (inputsList.last() as Input).apply {
+                                    setValue(params[3])
+                                    updateDefault()
+                                }
+                            }
                         }
                         "-" -> createOutput(params[1], false, params[2])
                         "+" -> createOutput(params[1], true, params[2])
@@ -95,6 +105,7 @@ class PackController(
                     }
                 } else description += line
             }
+            extractVisibleOutputs()
             updateAll()
             true
         } catch (e: Exception) {
@@ -126,7 +137,7 @@ class PackController(
         inputsList.find { it.name == name }.let {
             it == null || if (position != null) it == inputsList[position] else false
         }
-
+    
     fun createOutput(name: String, visible: Boolean, formula: String) {
         outputsList.add(Output(name, visible, formula))
         if (formula.isNotEmpty()) handleOutput(outputsList.last() as Output)
@@ -178,7 +189,7 @@ class PackController(
                         when (token[0]) {
                             '#' -> {
                                 token.drop(1).toIntOrNull()?.minus(1)?.let {
-                                    (it to pos).let { p -> relationIO.add(p) }
+                                    relationIO.add((it to pos))
                                     independent = false
                                 }
                             }
@@ -189,7 +200,7 @@ class PackController(
                                     s.push(it)
                                     while (!s.empty()) {
                                         val i = s.pop()
-                                        (i to pos).let { p -> relationOO.add(p) }
+                                        relationOO.add((i to pos))
                                         relationOO
                                             .forEach { oo -> if (oo.second == i) s.push(oo.first) }
                                     }
@@ -277,6 +288,12 @@ class PackController(
             if (!error) value = stack.pop()
         }
     }
+    
+    fun extractVisibleOutputs(){
+        visibleOutputs.clear()
+        outputsList
+            .forEachIndexed {index, output -> if((output as Output).visible) visibleOutputs.add(index) }
+    }
 
     private fun updateAll() {
         val list = (0..outputsList.size).toMutableList()
@@ -290,14 +307,10 @@ class PackController(
     }
 
     fun updateOO(position: Int) {
-        val queue: Queue<Int> = LinkedList()
-        var pos = position
-        do {
-            relationOO
-                .forEach { if (it.first == pos) queue.add(it.second) }
-            calculate(outputsList[pos] as Output)
-            if (queue.isNotEmpty()) pos = queue.remove()
-        } while (queue.isNotEmpty())
+        val queue = mutableListOf(position)
+        relationOO
+            .forEach { if (it.first == position) queue.add(it.second) }
+        queue.forEach { calculate(outputsList[it] as Output) }
     }
 
     fun connectedOutputs(position: Int): List<Int> {
@@ -306,7 +319,9 @@ class PackController(
             set.add(p.second)
             set.addAll(relationOO.filter { it.first == p.second }.map { it.second })
         }
-        return set.toList()
+        val result = mutableListOf<Int>()
+        visibleOutputs.forEachIndexed { index, i -> if (set.contains(i)) result.add(index) }
+        return result
     }
 
     fun close() {

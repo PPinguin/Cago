@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.cago.core.R
-import com.cago.pack.activities.PackActivity
-import com.cago.pack.adapters.lists.PackListAdapter
 import com.cago.core.databinding.FragmentPackageListBinding
 import com.cago.core.models.logic.Output
+import com.cago.pack.activities.PackActivity
+import com.cago.pack.adapters.lists.PackListAdapter
 import com.cago.pack.viewmodels.PackViewModel
 
 class PackageOutputFragment : Fragment() {
@@ -32,6 +32,7 @@ class PackageOutputFragment : Fragment() {
         viewModel.outputsLiveData.observe(viewLifecycleOwner) {
             packListAdapter.submitList(it.filter { f -> (f as Output).visible })
             binding?.label?.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+            packListAdapter.notifyDataSetChanged()
         }
         viewModel.editedInput.observe(viewLifecycleOwner) {
             viewModel.getConnections(it).forEach { i -> packListAdapter.notifyItemChanged(i) }

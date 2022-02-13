@@ -20,7 +20,7 @@ class MenuListAdapter(
                 oldItem.name == newItem.name
 
             override fun areContentsTheSame(oldItem: Pack, newItem: Pack): Boolean =
-                oldItem == newItem
+                oldItem.actual == newItem.actual && oldItem.key == newItem.key
         }
     ) {
 
