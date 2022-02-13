@@ -20,7 +20,7 @@ class QuestionDialog(
                     d.dismiss()
                 }
                 setNegativeButton(getString(R.string.no)){ d, _ -> d.dismiss()}
-            }.create()
+            }.create().apply { setCanceledOnTouchOutside(false) }
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 }

@@ -75,11 +75,12 @@ class Repository(
     fun generatePath(pack: Pack) = "$UID/${pack.name}"
 
     fun uploadPack(pack: Pack, handle: (ErrorType?) -> Unit) {
-        firebaseManager.uploadPack(fileManager.getFile(pack.name), object : Callback<String> {
+        if(pack.actual) return
+        firebaseManager.uploadPack(fileManager.getFile(pack.name), pack.key != null, object : Callback<String> {
             override fun success(data: String?) {
                 scope.launch { 
-                    packDao.update(pack.also { 
-                        it.key = data
+                    packDao.update(packDao.getByName(pack.name).also { 
+                        if(data != null) it.key = data
                         it.actual = true
                     })
                 }

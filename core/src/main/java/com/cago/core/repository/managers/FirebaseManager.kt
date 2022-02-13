@@ -2,7 +2,6 @@ package com.cago.core.repository.managers
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.core.content.edit
 import com.cago.core.models.Pack
 import com.cago.core.models.server.PackInfo
@@ -76,7 +75,7 @@ class FirebaseManager @Inject constructor(override val context: Context) : Manag
             })
     }
 
-    fun uploadPack(pack: File, callback: Callback<String>) {
+    fun uploadPack(pack: File, update: Boolean, callback: Callback<String>) {
         val name = pack.nameWithoutExtension
         val file = Uri.fromFile(pack)
         val fileRef = stRef.child("packages/$UID/${file.lastPathSegment}")
@@ -85,12 +84,14 @@ class FirebaseManager @Inject constructor(override val context: Context) : Manag
                 callback.failure(ErrorType.ERROR_UPLOAD)
             }
             .addOnSuccessListener {
-                val info = PackInfo(name, UID, true)
-                val ref = dbRef.push()
-                ref.setValue(info)
-                    .addOnCompleteListener {
-                        callback.success(ref.key)
-                    }
+                if(!update) {
+                    val info = PackInfo(name, UID, true)
+                    val ref = dbRef.push()
+                    ref.setValue(info)
+                        .addOnCompleteListener {
+                            callback.success(ref.key)
+                        }
+                } else callback.success()
             }
     }
 

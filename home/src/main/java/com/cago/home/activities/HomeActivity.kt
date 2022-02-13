@@ -77,6 +77,7 @@ class HomeActivity : AppCompatActivity() {
             logout.setOnClickListener {
                 logOut()
             }
+            version = packageManager.getPackageInfo(packageName, 0).versionName
         }
         supportActionBar?.apply {
             setHomeAsUpIndicator(R.drawable.ic_burger)
