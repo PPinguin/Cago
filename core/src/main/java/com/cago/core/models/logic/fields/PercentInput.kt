@@ -8,5 +8,5 @@ class PercentInput(name: String) : Input(name) {
     override fun setValue(value: String) {
         this.value = value.removeSuffix("%").toDoubleOrNull()?.div(100)
     }
-    override fun displayValue(): String = "${value?.times(100)?.toInt()}%"
+    override fun displayValue(): String = "${format.format(value?.times(100))}%"
 }

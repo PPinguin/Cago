@@ -112,8 +112,8 @@ class FirebaseManager @Inject constructor(override val context: Context) : Manag
     }
 
     fun delete(pack: Pack) {
-        pack.getInfo()?.let {
-            stRef.child("package/${it.path}/${it.name}.cg").delete()
+        pack.getInfo()?.let { it ->
+            stRef.child("packages/$UID/${it.name}.cg").delete()
             dbRef.child(pack.key!!).removeValue()
         }
     }

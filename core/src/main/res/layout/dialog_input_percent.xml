@@ -23,8 +23,7 @@
              app:layout_constraintEnd_toEndOf="parent"
              app:layout_constraintStart_toStartOf="parent"
              app:layout_constraintTop_toTopOf="parent" />
-
-
+         
          <LinearLayout
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
@@ -36,19 +35,13 @@
              app:layout_constraintStart_toStartOf="parent"
              app:layout_constraintTop_toBottomOf="@+id/name">
 
-             <SeekBar
+             <androidx.appcompat.widget.AppCompatEditText
                  android:id="@+id/value"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
-                 android:layout_weight="4"
-                 android:max="100" />
-
-             <TextView
-                 android:id="@+id/text"
-                 style="@style/SingleLineText"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
                  android:layout_weight="1"
+                 android:background="@null"
+                 android:inputType="numberDecimal"
                  android:textAlignment="center"
                  android:textSize="10pt" />
 
