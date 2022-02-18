@@ -50,7 +50,8 @@ class PercentInputDialog(val field: PercentInput): FieldDialog() {
                 }
             })
             it.ok.setOnClickListener { _ ->
-                field.value = it.value.text.toString().dropLast(1).toDouble().div(100)
+                field.value = it.value.text.toString().dropLast(1).toDoubleOrNull()
+                    ?.div(100) ?: 0.0
                 dismiss()
             }
         }

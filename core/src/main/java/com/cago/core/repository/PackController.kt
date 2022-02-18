@@ -119,6 +119,18 @@ class PackController(
 
     fun deleteInput(input: Input) {
         inputsList.remove(input)
+        val pos = inputsList.indexOf(input)
+        val cache = mutableListOf<Pair<Int, Int>>()
+        var a: Int; var b: Int
+        relationIO.forEach {
+            if (it.first > pos || it.second > pos){
+                a = if(it.first > pos) it.first-1 else it.first
+                b = if(it.second > pos) it.second-1 else it.second
+                cache.add(it.copy(first = a, second = b))
+            }
+        }
+        relationIO.removeAll { pair -> pair.first >= pos }
+        relationIO.addAll(cache)
     }
 
     fun editInput(input: Input, name: String, type: InputType) {
@@ -147,7 +159,17 @@ class PackController(
         outputsList.remove(output)
         val pos = outputsList.indexOf(output)
         relationIO.removeAll { pair -> pair.second == pos }
-        relationOO.removeAll { pair -> pair.second == pos }
+        val cache = mutableListOf<Pair<Int, Int>>()
+        var a: Int; var b: Int
+        relationOO.forEach {
+            if (it.first > pos || it.second > pos){
+                a = if(it.first > pos) it.first-1 else it.first 
+                b = if(it.second > pos) it.second-1 else it.second
+                cache.add(it.copy(first = a, second = b))
+            }
+        }
+        relationOO.removeAll { pair -> pair.second >= pos || pair.first >= pos }
+        relationOO.addAll(cache)
     }
 
     fun editOutput(output: Output, name: String, visible: Boolean) {
@@ -321,6 +343,19 @@ class PackController(
         }
         val result = mutableListOf<Int>()
         visibleOutputs.forEachIndexed { index, i -> if (set.contains(i)) result.add(index) }
+        return result
+    }
+    
+    fun getOutputConnections(index: Int): List<Int>{
+        val result = mutableListOf<Int>()
+        relationOO.forEach { if(it.first == index) result.add(it.second) }
+        return result
+    }
+
+
+    fun getInputConnections(index: Int): List<Int>{
+        val result = mutableListOf<Int>()
+        relationIO.forEach { if(it.first == index) result.add(it.second) }
         return result
     }
 

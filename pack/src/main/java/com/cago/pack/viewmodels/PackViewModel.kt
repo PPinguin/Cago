@@ -90,15 +90,20 @@ class PackViewModel @Inject constructor(
             true
         } else false
 
-    fun deleteInput(input: Input) {
-        packController.deleteInput(input)
-        updateInputs()
-        changed()
-    }
+    fun deleteInput(input: Input) = 
+        viewModelScope.launch(Dispatchers.Default) { 
+            packController.deleteInput(input)
+            withContext(Dispatchers.Main){ updateInputs() }
+            changed()
+        }
     
     fun defaultInput(input: Input){
-        input.updateDefault()
-        changed()
+        viewModelScope.launch(Dispatchers.Default) {
+            input.updateDefault()
+            val index = packController.inputsList.indexOf(input)
+            packController.getInputConnections(index).forEach{ addEditedOuput(it) }
+            changed()
+        }
     }
     
     fun getInput(index: Int) = packController.inputsList[index]
@@ -123,11 +128,12 @@ class PackViewModel @Inject constructor(
             true
         } else false
 
-    fun deleteOutput(output: Output) {
-        packController.deleteOutput(output)
-        updateOutputs()
-        changed()
-    }
+    fun deleteOutput(output: Output) =
+        viewModelScope.launch(Dispatchers.Default) {
+            packController.deleteOutput(output)
+            withContext(Dispatchers.Main){ updateOutputs() }
+            changed()
+        }
 
     fun getOutputIndex(output: Output) = packController.outputsList.indexOf(output)
 
@@ -136,11 +142,18 @@ class PackViewModel @Inject constructor(
     private fun updateOutputs() {
         outputsLiveData.postValue(packController.outputsList)
     }
+    
+    private fun addEditedOuput(index: Int){
+        val connects = packController.getOutputConnections(index)
+        editedOutputs.removeAll { connects.contains(it) }
+        editedOutputs.add(index)
+    }
 
     fun handleOutput(output: Output) =
         viewModelScope.launch(Dispatchers.Default) {
             changed()
-            editedOutputs.add(packController.outputsList.indexOf(output))
+            val index = packController.outputsList.indexOf(output)
+            addEditedOuput(index)
             packController.handleOutput(output)
         }
 
@@ -152,13 +165,16 @@ class PackViewModel @Inject constructor(
 
     fun isOwnUser() = packController.own
 
-    fun run() =
-        viewModelScope.launch(Dispatchers.Default) {
-            editedOutputs.forEach { packController.updateOO(it) }
-            editedOutputs.clear()
-            packController.extractVisibleOutputs()
-            withContext(Dispatchers.Main) { updateOutputs() }
+    fun run() {
+        if(changed) {
+            viewModelScope.launch(Dispatchers.Default) {
+                editedOutputs.forEach { packController.updateOO(it) }
+                editedOutputs.clear()
+                packController.extractVisibleOutputs()
+                withContext(Dispatchers.Main) { updateOutputs() }
+            }
         }
+    }
 
     fun update(position: Int) =
         viewModelScope.launch(Dispatchers.Default) {
