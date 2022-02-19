@@ -120,17 +120,11 @@ class PackController(
     fun deleteInput(input: Input) {
         inputsList.remove(input)
         val pos = inputsList.indexOf(input)
-        val cache = mutableListOf<Pair<Int, Int>>()
-        var a: Int; var b: Int
-        relationIO.forEach {
-            if (it.first > pos || it.second > pos){
-                a = if(it.first > pos) it.first-1 else it.first
-                b = if(it.second > pos) it.second-1 else it.second
-                cache.add(it.copy(first = a, second = b))
-            }
+        for (i in 0 until relationIO.size){
+            if (relationIO[i].first > pos)
+                relationIO[i] = relationIO[i].copy(first = relationIO[i].first-1)
         }
-        relationIO.removeAll { pair -> pair.first >= pos }
-        relationIO.addAll(cache)
+        relationIO.removeAll { pair -> pair.first == pos }
     }
 
     fun editInput(input: Input, name: String, type: InputType) {
@@ -159,17 +153,15 @@ class PackController(
         outputsList.remove(output)
         val pos = outputsList.indexOf(output)
         relationIO.removeAll { pair -> pair.second == pos }
-        val cache = mutableListOf<Pair<Int, Int>>()
-        var a: Int; var b: Int
-        relationOO.forEach {
-            if (it.first > pos || it.second > pos){
-                a = if(it.first > pos) it.first-1 else it.first 
-                b = if(it.second > pos) it.second-1 else it.second
-                cache.add(it.copy(first = a, second = b))
-            }
+        for (i in 0 until relationOO.size){
+            if (relationOO[i].first > pos)
+                relationOO[i] = relationOO[i].copy(first = relationOO[i].first-1)
         }
-        relationOO.removeAll { pair -> pair.second >= pos || pair.first >= pos }
-        relationOO.addAll(cache)
+        relationOO.removeAll { pair -> 
+            pair.second == pos || 
+            pair.first == pos || 
+            pair.second == outputsList.size 
+        }
     }
 
     fun editOutput(output: Output, name: String, visible: Boolean) {
