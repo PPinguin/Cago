@@ -33,6 +33,8 @@ class FirebaseManager @Inject constructor(override val context: Context) : Manag
     private var auth: FirebaseAuth
     private var stRef: StorageReference
     private var dbRef: DatabaseReference
+    
+    private var process = false
 
     init {
         FirebaseApp.initializeApp(context)
@@ -76,12 +78,15 @@ class FirebaseManager @Inject constructor(override val context: Context) : Manag
     }
 
     fun uploadPack(pack: File, update: Boolean, callback: Callback<String>) {
+        if(process) return
         val name = pack.nameWithoutExtension
         val file = Uri.fromFile(pack)
         val fileRef = stRef.child("packages/$UID/${file.lastPathSegment}")
+        process = true
         fileRef.putFile(file)
             .addOnFailureListener {
                 callback.failure(ErrorType.ERROR_UPLOAD)
+                process = false
             }
             .addOnSuccessListener {
                 if(!update) {
@@ -92,6 +97,7 @@ class FirebaseManager @Inject constructor(override val context: Context) : Manag
                             callback.success(ref.key)
                         }
                 } else callback.success()
+                process = false
             }
     }
 

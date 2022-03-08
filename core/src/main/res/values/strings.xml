@@ -29,8 +29,8 @@
     <string name="edit_pack">Edit package</string>
     <string name="empty_input_list">No inputs</string>
     <string name="empty_output_list">No outputs</string>
-    <string name="empty_input_edit">Add input "+"</string>
-    <string name="empty_output_edit">Add output "+"</string>
+    <string name="empty_input_edit">Add input</string>
+    <string name="empty_output_edit">Add output</string>
     <string name="filed">Field edit</string>
     <string name="text">Text</string>
     <string name="open_pack">Open pack</string>

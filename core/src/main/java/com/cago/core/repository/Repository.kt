@@ -73,7 +73,7 @@ class Repository(
     }
     
     fun generatePath(pack: Pack) = "$UID/${pack.name}"
-
+    
     fun uploadPack(pack: Pack, handle: (ErrorType?) -> Unit) {
         if(pack.actual) return
         firebaseManager.uploadPack(fileManager.getFile(pack.name), pack.key != null, object : Callback<String> {

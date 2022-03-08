@@ -9,6 +9,7 @@ import com.cago.core.R
 import com.cago.pack.activities.PackActivity
 import com.cago.pack.adapters.lists.EditPackListAdapter
 import com.cago.core.databinding.FragmentPackageListBinding
+import com.cago.core.databinding.FragmentPackageListEditBinding
 import com.cago.core.dialogs.alerts.QuestionDialog
 import com.cago.pack.dialogs.alerts.OutputDialog
 import com.cago.pack.dialogs.fields.FormulaDialog
@@ -16,7 +17,7 @@ import com.cago.pack.viewmodels.PackViewModel
 
 class EditPackageOutputFragment : Fragment(), EditPackageFragment {
 
-    private var binding: FragmentPackageListBinding? = null
+    private var binding: FragmentPackageListEditBinding? = null
     private lateinit var viewModel: PackViewModel
     private lateinit var editPackListAdapter: EditPackListAdapter
 
@@ -29,18 +30,23 @@ class EditPackageOutputFragment : Fragment(), EditPackageFragment {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentPackageListBinding.inflate(inflater)
+        binding = FragmentPackageListEditBinding.inflate(inflater)
         editPackListAdapter = EditPackListAdapter(
             { i -> viewModel.activeOutputIndex = i },
             viewModel.activeOutputIndex
         )
         viewModel.outputsLiveData.observe(viewLifecycleOwner) {
             editPackListAdapter.submitList(it.toMutableList())
-            binding?.label?.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+            binding?.action?.apply{
+                visibility = if (it.isEmpty()) {
+                    setOnClickListener { createField() }
+                    View.VISIBLE
+                } else View.GONE
+            }
         }
         binding?.let {
             it.list.adapter = editPackListAdapter
-            it.label.text = getString(R.string.empty_output_edit)
+            it.action.text = getString(R.string.empty_output_edit)
         }
         return binding?.root
     }
@@ -48,6 +54,14 @@ class EditPackageOutputFragment : Fragment(), EditPackageFragment {
     override fun onDestroyView() {
         binding = null
         super.onDestroyView()
+    }
+
+    override fun createField() {
+        OutputDialog(viewModel::addOutput)
+            .show(
+                requireActivity().supportFragmentManager,
+                getString(R.string.output)
+            )
     }
 
     override fun valueField() {

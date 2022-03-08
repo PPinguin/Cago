@@ -68,7 +68,9 @@ class EditPackFragment : Fragment() {
                     viewModel.message.value = ""
                 }
             }
-            it.fab.setOnClickListener { _ -> addField(it.pager.currentItem) }
+            it.fab.setOnClickListener { _ -> 
+                getEditFragment(it.pager.currentItem).createField() 
+            }
             it.e.setOnClickListener { _ ->
                 getEditFragment(it.pager.currentItem).editField()
             }
@@ -88,22 +90,6 @@ class EditPackFragment : Fragment() {
     private fun getEditFragment(i: Int): EditPackageFragment =
         if(i == 0) EditPackFragmentsAdapter.inputFragment
         else EditPackFragmentsAdapter.outputFragment
-
-    private fun addField(item: Int) {
-        if (item == 0) {
-            InputDialog(viewModel::addInput)
-                .show(
-                    requireActivity().supportFragmentManager,
-                    getString(R.string.input)
-                )
-        } else {
-            OutputDialog(viewModel::addOutput)
-                .show(
-                    requireActivity().supportFragmentManager,
-                    getString(R.string.output)
-                )
-        }
-    }
 
     private fun editInfo() {
         InfoEditDialog(viewModel.getDescription()) { text ->
