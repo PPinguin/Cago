@@ -68,7 +68,7 @@
     <string name="email">Email</string>
     <string name="log_in">Log in</string>
     <string name="go">Go</string>
-    <string name="auth_msg">Check your email.</string>
+    <string name="auth_msg">You receive an email with login link.\nOpen link in Cago app.</string>
     <string name="error_send_link">Log-in link was not sent. :(</string>
     <string name="error_log_in">Unexpected error during logging in.</string>
     <string name="repeat">Repeat</string>

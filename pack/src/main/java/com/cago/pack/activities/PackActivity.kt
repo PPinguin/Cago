@@ -32,11 +32,6 @@ class PackActivity : AppCompatActivity() {
         navController = findNavController(R.id.nav_host_fragment)
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        viewModel.message(com.cago.core.R.string.restart_app)
-    }
-
     @DelicateCoroutinesApi
     override fun onBackPressed() { 
         if (navController.currentDestination?.id == R.id.packFragment) {

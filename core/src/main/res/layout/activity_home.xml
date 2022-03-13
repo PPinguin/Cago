@@ -54,6 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:orientation="horizontal"
+            android:gravity="center"
             android:paddingHorizontal="16dp">
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/logout"

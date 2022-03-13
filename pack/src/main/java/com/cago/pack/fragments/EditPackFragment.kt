@@ -11,8 +11,6 @@ import com.cago.core.R
 import com.cago.core.databinding.FragmentEditPackBinding
 import com.cago.pack.activities.PackActivity
 import com.cago.pack.adapters.EditPackFragmentsAdapter
-import com.cago.pack.dialogs.alerts.InputDialog
-import com.cago.pack.dialogs.alerts.OutputDialog
 import com.cago.pack.dialogs.info.InfoEditDialog
 import com.cago.pack.fragments.edit.EditPackageFragment
 import com.cago.pack.viewmodels.PackViewModel
@@ -64,7 +62,7 @@ class EditPackFragment : Fragment() {
             }.attach()
             viewModel.message.observe(viewLifecycleOwner){ msg ->
                 if(msg.isNotEmpty()) {
-                    Snackbar.make(it.root, msg, Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(it.root, msg, Snackbar.LENGTH_SHORT).setAnchorView(R.id.bar).show()
                     viewModel.message.value = ""
                 }
             }
