@@ -1,6 +1,7 @@
 # Cago
 Do your calculations easier.
 Cago provides you way to do complex calculations on your device. You can build functions that fit your goals by yourself.
+### [Google Play](https://play.google.com/store/apps/details?id=com.cago)
 
 # Guide
 Create package and go to editing to build functional.
