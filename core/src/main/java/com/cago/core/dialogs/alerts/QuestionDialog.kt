@@ -8,13 +8,15 @@ import com.cago.core.dialogs.BaseDialog
 
 class QuestionDialog(
     private val listener: ()->Unit,
-    private val question: String
+    private val question: String,
+    private val cancelable: Boolean = false
 ): BaseDialog() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
             AlertDialog.Builder(it).apply {
                 setMessage(question)
+                setCancelable(cancelable)
                 setPositiveButton(getString(R.string.yes)){ d, _ ->
                     listener()
                     d.dismiss()

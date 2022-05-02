@@ -1,56 +1,343 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="append"
+            type="com.cago.core.dialogs.DialogCallback" />
+
+        <variable
+            name="remove"
+            type="com.cago.core.dialogs.DialogCallback" />
+
+        <variable
+            name="choose"
+            type="com.cago.core.dialogs.DialogCallback" />
+    </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp">
-    
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/_background"
-        android:padding="16dp">
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="0dp"
-            android:textSize="12pt"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/value"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/formula"
-            android:background="@null"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ok"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name" />
 
-        <ImageButton
-            android:id="@+id/ok"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:background="@null"
-            android:contentDescription="@null"
-            android:padding="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/value"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/value"
-            app:srcCompat="@drawable/ic_ok" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/_background"
+                android:padding="16dp">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="12pt"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/value"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:ems="10"
+                    android:focusable="true"
+                    android:hint="@string/formula"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    app:layout_constraintEnd_toStartOf="@+id/ok"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/name" />
+
+                <ImageButton
+                    android:id="@+id/ok"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:padding="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/value"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/value"
+                    app:srcCompat="@drawable/ic_ok" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="360dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/_background"
+                android:padding="16dp">
+
+                <TableLayout
+                    android:id="@+id/keyboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="visible">
+
+                    <TableRow
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{(v) -> append.activate('7')}"
+                            android:text="7" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{(v) -> append.activate('8')}"
+                            android:text="8" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{(v) -> append.activate('9')}"
+                            android:text="9" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton.Special"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('+')}"
+                            android:text="+" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('4')}"
+                            android:text="4" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('5')}"
+                            android:text="5" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('6')}"
+                            android:text="6" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton.Special"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('-')}"
+                            android:text="-" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('1')}"
+                            android:text="1" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('2')}"
+                            android:text="2" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('3')}"
+                            android:text="3" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton.Special"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('*')}"
+                            android:text="*" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+
+                        <Space android:layout_weight="0.25" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('0')}"
+                            android:text="0" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('.')}"
+                            android:text="." />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton.Special"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('/')}"
+                            android:text="/" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton.Special"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('(')}"
+                            android:text="(" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton.Special"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate(')')}"
+                            android:text=")" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton.Special"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> append.activate('^')}"
+                            android:text="^" />
+                        
+                        <ImageButton
+                            style="@style/KeyboardButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{() -> remove.activate(null)}"
+                            android:background="@null"
+                            android:contentDescription="@null"
+                            android:padding="8dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/title"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/title"
+                            app:srcCompat="@drawable/ic_less" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton.Field"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{()->choose.activate('i')}"
+                            android:text="@string/input" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            style="@style/KeyboardButton.Field"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{()->choose.activate('o')}"
+                            android:text="@string/output" />
+
+                    </TableRow>
+                </TableLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/choice"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <ImageButton
+                        android:id="@+id/back"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:background="@null"
+                        android:contentDescription="@null"
+                        android:padding="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/title"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/title"
+                        app:srcCompat="@drawable/ic_less" />
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:textAlignment="center"
+                        android:textSize="10pt"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="10pt"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/list"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/title" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </FrameLayout>
+        </LinearLayout>
     </FrameLayout>
 </layout>

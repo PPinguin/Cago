@@ -17,7 +17,7 @@ class EditPackDialog(private val listener: (String)->Unit): BottomSheetDialogFra
     ): View {
         val binding = DialogEditPackBinding.inflate(inflater)
         binding.listener = object : DialogCallback{
-            override fun activate(data: Any) {
+            override fun activate(data: Any?) {
                 listener(data as String)
                 dismiss()
             }

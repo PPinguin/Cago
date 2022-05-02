@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import com.cago.core.R
 import com.cago.pack.activities.PackActivity
 import com.cago.pack.adapters.lists.EditPackListAdapter
-import com.cago.core.databinding.FragmentPackageListBinding
 import com.cago.core.databinding.FragmentPackageListEditBinding
 import com.cago.core.dialogs.alerts.QuestionDialog
 import com.cago.pack.dialogs.alerts.OutputDialog
@@ -66,7 +65,9 @@ class EditPackageOutputFragment : Fragment(), EditPackageFragment {
 
     override fun valueField() {
         viewModel.getActiveOutput()?.let {
-            FormulaDialog(it)
+            FormulaDialog(it, 
+                viewModel.inputsLiveData.value ?: emptyList(), 
+                viewModel.outputsLiveData.value ?: emptyList())
                 .apply {
                     setOnAccepted {
                         editPackListAdapter.notifyItemChanged(viewModel.getOutputIndex(it))

@@ -2,4 +2,6 @@
 <resources>
     <string name="close_pack_question">Would you like to save changes?</string>
     <string name="close_question">Close question</string>
+    <string name="no_input">No input</string>
+    <string name="no_output">No output</string>
 </resources>

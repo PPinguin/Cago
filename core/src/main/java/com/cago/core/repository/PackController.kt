@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.cago.core.models.logic.Field
 import com.cago.core.models.logic.Input
 import com.cago.core.models.logic.Output
+import com.cago.core.models.logic.parser.*
 import com.cago.core.repository.callbacks.Callback
 import com.cago.core.repository.managers.FileManager
 import com.cago.core.repository.managers.FirebaseManager
@@ -26,7 +27,10 @@ class PackController(
 
     val inputsList = arrayListOf<Field>()
     val outputsList = arrayListOf<Field>()
+    
     var description: String? = null
+    
+    private val parser = Parser()
 
     private val relationIO = mutableListOf<Pair<Int, Int>>()
     private val relationOO = mutableListOf<Pair<Int, Int>>()
@@ -114,7 +118,7 @@ class PackController(
     }
 
     fun createInput(name: String, type: InputType) {
-        inputsList.add(InputType.buildField(type, name))
+        inputsList.add(Input.buildField(type, name))
     }
 
     fun deleteInput(input: Input) {
@@ -130,11 +134,20 @@ class PackController(
     fun editInput(input: Input, name: String, type: InputType) {
         input.apply {
             if (this.type == type) {
-                this.name = name
+                if(this.name != name){
+                    val index = inputsList.indexOf(input)
+                    relationIO.filter { p -> p.first ==  index}.forEach { p -> 
+                        (outputsList[p.second] as Output).let {
+                            it.formula = it.formula
+                                .replace("[${this.name}]", "[$name]")
+                        }
+                    }
+                    this.name = name
+                }
             } else {
                 val pos = inputsList.indexOf(input)
                 inputsList.remove(this)
-                inputsList.add(pos, InputType.buildField(type, name))
+                inputsList.add(pos, Input.buildField(type, name))
             }
         }
     }
@@ -166,6 +179,16 @@ class PackController(
 
     fun editOutput(output: Output, name: String, visible: Boolean) {
         output.apply {
+            if(this.name != name){
+                val index = outputsList.indexOf(output)
+                relationOO.filter { p -> p.first ==  index}.forEach { p ->
+                    (outputsList[p.second] as Output).let {
+                        it.formula = it.formula
+                            .replace("<${this.name}>", "<$name>")
+                    }
+                }
+                this.name = name
+            }
             this.name = name
             this.visible = visible
         }
@@ -178,94 +201,38 @@ class PackController(
 
     fun handleOutput(output: Output) {
         output.apply {
-            if (parseFormula(this)) {
+            parseFormula(this)
+            if (actions.find { t -> t is InputToken || t is OutputToken } == null) {
                 calculate(this)
                 actions.clear()
-                actions.add(value.toString())
+                actions.add(NumberToken(value?:0.0))
             }
         }
     }
 
-    private fun parseFormula(output: Output): Boolean {
-        var token = ""
-        var independent = true
-        val stack = Stack<Char>()
+    private fun parseFormula(output: Output) {
         val pos = outputsList.indexOf(output)
+
         relationIO.removeAll { pair -> pair.second == pos }
         relationOO.removeAll { pair -> pair.second == pos }
-        output.apply {
-            actions.clear()
-            for (c in "$formula;") {
-                if (c == ' ') continue
-                if (c.isDigit() || c in arrayOf('.', '#', '@')) token += c
-                else {
-                    if (token.isNotEmpty()) {
-                        when (token[0]) {
-                            '#' -> {
-                                token.drop(1).toIntOrNull()?.minus(1)?.let {
-                                    relationIO.add((it to pos))
-                                    independent = false
-                                }
-                            }
-                            '@' -> {
-                                token.drop(1).toIntOrNull()?.minus(1)?.let {
-                                    if (pos == it) return true
-                                    val s = Stack<Int>()
-                                    s.push(it)
-                                    while (!s.empty()) {
-                                        val i = s.pop()
-                                        relationOO.add((i to pos))
-                                        relationOO
-                                            .forEach { oo -> if (oo.second == i) s.push(oo.first) }
-                                    }
-                                    independent = false
-                                }
-                            }
-                        }
-                        actions.add(token)
+        
+        output.actions = parser.parse(output.formula, inputsList, outputsList).onEach { t ->
+            when(t){
+                is InputToken -> {
+                    relationIO.add((t.index to pos))
+                }
+                is OutputToken -> {
+                    val s = Stack<Int>()
+                    s.push(t.index)
+                    while (!s.empty()) {
+                        val i = s.pop()
+                        relationOO.add((i to pos))
+                        relationOO
+                            .forEach { oo -> if (oo.second == i) s.push(oo.first) }
                     }
-                    when {
-                        (c == '+') -> {
-                            while (!stack.empty() && stack.peek() != '|') {
-                                actions.add(stack.pop().toString())
-                            }
-                            stack.push('+')
-                        }
-                        (c == '-') -> {
-                            if(token.isNotEmpty()) {
-                                while (!stack.empty() && stack.peek() != '|') {
-                                    actions.add(stack.pop().toString())
-                                }
-                                stack.push('-')
-                            } else stack.push('!')
-                        }
-                        (c in arrayOf('*', '/')) -> {
-                            while (!stack.empty() && stack.peek() in arrayOf('*', '/', '^')) {
-                                actions.add(stack.pop().toString())
-                            }
-                            stack.push(c)
-                        }
-                        (c == '^') -> {
-                            while (!stack.empty() && stack.peek() == '^') {
-                                actions.add(stack.pop().toString())
-                            }
-                            stack.push(c)
-                        }
-                        (c == '(') -> stack.push('|')
-                        (c == ')') -> {
-                            while (!stack.empty() && stack.peek() != '|') {
-                                actions.add(stack.pop().toString())
-                            }
-                            if (!stack.empty()) stack.pop()
-                        }
-                    }
-                    if(token.isNotEmpty()) token = ""
                 }
             }
-            if (token.isNotEmpty()) actions.add(token)
-            while (!stack.empty()) actions.add(stack.pop().toString())
-        }
-        return independent
+        }.toMutableList()
     }
 
     private fun calculate(output: Output) {
@@ -275,23 +242,29 @@ class PackController(
             error = actions.isEmpty()
             actions.forEach {
                 try {
-                    when {
-                        it[0] == '#' -> stack.push(inputsList[it.drop(1).toInt() - 1].value)
-                        it[0] == '@' -> (it.drop(1).toInt() - 1).also { i ->
+                    when(it) {
+                        is InputToken -> stack.push(inputsList[it.index].value)
+                        is OutputToken -> it.index.also { i ->
                             if (i != pos)
                                 stack.push(outputsList[i].value)
                             else throw Exception()
                         }
-                        it == "!" -> stack.push(-stack.pop())
-                        it == "+" -> stack.push(stack.pop() + stack.pop())
-                        it == "-" -> stack.push(-stack.pop() + stack.pop())
-                        it == "*" -> stack.push(stack.pop() * stack.pop())
-                        it == "/" -> stack.push(1 / stack.pop() * stack.pop())
-                        it == "^" -> {
-                            stack.push(stack[stack.size - 2].pow(stack.pop()))
-                            stack.removeAt(stack.size - 2) // clear stack
+                        is OperatorToken -> {
+                            when(it.type) {
+                                Operator.INV -> stack.push(-stack.pop())
+                                Operator.SUM -> stack.push(stack.pop() + stack.pop())
+                                Operator.SUB -> stack.push(-stack.pop() + stack.pop())
+                                Operator.MUL -> stack.push(stack.pop() * stack.pop())
+                                Operator.DIV -> stack.push(1 / stack.pop() * stack.pop())
+                                Operator.POW -> {
+                                    stack.push(stack[stack.size - 2].pow(stack.pop()))
+                                    stack.removeAt(stack.size - 2) // clear stack
+                                }
+                                else -> throw Exception("Unknown operator")
+                            }
                         }
-                        else -> stack.push(it.toDouble())
+                        is NumberToken -> stack.push(it.number) 
+                        else -> throw Exception("Unknown token")
                     }
                 } catch (e: Exception) {
                     error = true
