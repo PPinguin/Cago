@@ -9,7 +9,7 @@ Cago has package controll system, that lets you manage your data easily. Everyth
 
 .. note:: Edit package can only its owner.
 
-The indicator of package show its state:
+The indicator of package shows its state:
 
 #. **green**: actual version of package is uploaded.
 #. **blue**: not actual version of package is uploaded.
@@ -30,3 +30,11 @@ Setting value of output field means defining a formula in which value of field w
 #. Use arethmetic operations: **+**, **-**, *****, **/**, **^** and brackets.
 #. Write **#n** to get value of **n** input field.
 #. Write **@n** to get value of **n** output field.
+
+Examples of valid formula:
+####
+  #2+5*(#3+10)
+  
+  @1+@2+#3/5
+  
+  (2^#3)-1*(@2+1)
