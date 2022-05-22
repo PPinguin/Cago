@@ -2,7 +2,6 @@ package com.cago.pack.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -36,21 +35,12 @@ class PackActivity : AppCompatActivity() {
     override fun onBackPressed() { 
         if (navController.currentDestination?.id == R.id.packFragment) {
             var save = false
-            if (viewModel.changed && viewModel.isOwnUser() == true) {
+            if (viewModel.changed) {
                 QuestionDialog({
-                    save = true              
-                }, getString(R.string.close_pack_question)).also { 
+                    save = true           
+                }, getString(R.string.close_pack_question), true).also { 
                     it.setOnAccepted {
-                        viewModel.closePack(save) {
-                            setResult(
-                                Activity.RESULT_OK,
-                                Intent().apply {
-                                    putExtra("name", viewModel.pack.value)
-                                    putExtra("actual", save)
-                                }
-                            )
-                            super.onBackPressed()   
-                        }
+                        viewModel.closePack(save) { super.onBackPressed() }
                     }
                 }
                     .show(supportFragmentManager, getString(R.string.close_question))

@@ -11,6 +11,7 @@ import com.cago.core.R
 import com.cago.pack.activities.PackActivity
 import com.cago.core.databinding.FragmentLoadingBinding
 import com.cago.pack.viewmodels.PackViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class LoadingFragment : Fragment() {
 
@@ -26,17 +27,18 @@ class LoadingFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val data = requireActivity().intent.data?.pathSegments
-        val bundle = if (data != null) 
-            bundleOf(
-                "path" to data[0],
-                "name" to data[1]
-            ) 
-        else 
-            requireActivity().intent.extras
+        val bundle = requireActivity().intent.extras
         if (bundle == null) findNavController().popBackStack()
         binding = FragmentLoadingBinding.inflate(inflater)
-        binding?.let { it.pack = bundle!!.getString("name") }
+        binding?.let { 
+            it.pack = bundle!!.getString("name")
+            viewModel.message.observe(viewLifecycleOwner) { msg ->
+                if (msg.isNotEmpty()) {
+                    Snackbar.make(it.root, msg, Snackbar.LENGTH_SHORT).show()
+                    viewModel.message.value = ""
+                }
+            }
+        }
         viewModel.openPack(bundle!!)
         viewModel.pack.observe(viewLifecycleOwner) {
             if (it != null)

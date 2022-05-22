@@ -17,10 +17,10 @@ class MenuListAdapter(
     ListAdapter<Pack, MenuListAdapter.Item>(
         object : DiffUtil.ItemCallback<Pack>() {
             override fun areItemsTheSame(oldItem: Pack, newItem: Pack): Boolean =
-                oldItem.name == newItem.name
+                oldItem == newItem
 
             override fun areContentsTheSame(oldItem: Pack, newItem: Pack): Boolean =
-                oldItem.actual == newItem.actual && oldItem.key == newItem.key
+                oldItem.name == newItem.name
         }
     ) {
 
@@ -29,8 +29,6 @@ class MenuListAdapter(
         fun bind(p: Pack) {
             binding.apply {
                 name.text = p.name
-                uploaded = p.key != null
-                actual = p.actual
                 action.setOnClickListener { onActionClick(p) }
                 root.setOnClickListener { onClick(p) }
             }

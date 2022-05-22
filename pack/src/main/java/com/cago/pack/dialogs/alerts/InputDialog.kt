@@ -36,13 +36,18 @@ class InputDialog(
                 spinner.setSelection(InputType.values().indexOf(input.type))
             }
             positive.setOnClickListener {
-                if (name.text.isNotEmpty() && listener(name.text.toString(),
+                if (!name.text.isNullOrBlank() && listener(name.text.toString(),
                         spinner.selectedItem as InputType)
                 )
-                    dismiss()
-                else name.requestFocus()
+                    closeDialog()
+                else {
+                    name.apply{
+                        error = context.getString(R.string.invalid_name)
+                        requestFocus()
+                    }
+                }
             }
-            negative.setOnClickListener { dismiss() }
+            negative.setOnClickListener { closeDialog() }
         }
         return binding.root
     }

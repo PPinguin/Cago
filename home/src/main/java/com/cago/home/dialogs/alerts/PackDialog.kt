@@ -8,8 +8,7 @@ import com.cago.core.databinding.DialogPackBinding
 import com.cago.core.dialogs.BaseDialog
 
 class PackDialog(
-    private val listener: (String)->Unit, 
-    private val name: String? = null
+    private val listener: (String)->Unit 
 ): BaseDialog() {
 
     override fun onCreateView(
@@ -20,12 +19,11 @@ class PackDialog(
         val binding = DialogPackBinding.inflate(inflater)
         binding.apply{
             packName.requestFocus()
-            if (name != null) packName.setText(name)
             positive.setOnClickListener {
                 listener(packName.text.toString())
-                dismiss()
+                closeDialog()
             }
-            negative.setOnClickListener { dismiss() }
+            negative.setOnClickListener { closeDialog() }
         }
         return binding.root
     }

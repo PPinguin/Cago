@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.cago.core.databinding.DialogOutputBinding
 import com.cago.core.dialogs.BaseDialog
 import com.cago.core.models.logic.Output
+import com.cago.core.R
 
 class OutputDialog(
     private val listener: (String, Boolean, String?) -> Boolean,
@@ -28,14 +29,19 @@ class OutputDialog(
                 visible.isChecked = output.visible
             }
             positive.setOnClickListener {
-                if (name.text.isNotEmpty() && listener(name.text.toString(),
+                if (!name.text.isNullOrBlank() && listener(name.text.toString(),
                         visible.isChecked,
                         output?.formula)
                 )
-                    dismiss()
-                else name.requestFocus()
+                    closeDialog()
+                else {
+                    name.apply { 
+                        error = context.getString(R.string.invalid_name)
+                        requestFocus()
+                    }
+                }
             }
-            negative.setOnClickListener { dismiss() }
+            negative.setOnClickListener { closeDialog() }
         }
         return binding.root
     }

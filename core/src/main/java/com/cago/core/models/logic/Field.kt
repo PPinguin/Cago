@@ -3,8 +3,14 @@ package com.cago.core.models.logic
 import java.text.NumberFormat
 import java.util.*
 
-abstract class Field(var name: String) {
+abstract class Field(name: String) {
     
+    var name = name
+        set(value) {
+            if(value.contains(Regex("[\\W]"))) throw Exception()
+            field = value
+        }
+
     open var value: Double? = null
     
     abstract fun displayValue(): String

@@ -19,7 +19,7 @@
     <string name="formula">Formula</string>
     <string name="loading">Loading \"%s\"</string>
     <string name="close">Close</string>
-    <string name="info">Info</string>
+    <string name="comment">Comment</string>
     <string name="description">Description</string>
     <string name="export">Export</string>
     <string name="delete">Delete</string>
@@ -51,6 +51,7 @@
     <string name="error_results">Results cannot be loaded</string>
     <string name="error_share">Package \"%s\" must be uploaded firstly.</string>
     <string name="error_field_not_chosen">Choose field firstly.</string>
+    <string name="error_file_open">File cannot be opened</string>
     <string name="input_edit">Input (edit)</string>
     <string name="input_copy">Input (copy)</string>
     <string name="output_edit">Output (edit)</string>
@@ -59,7 +60,6 @@
     <string name="help">Documentation</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="error_initializing">At first start app must has Internet connection in case of initializing user.</string>
     <string name="message">Message</string>
     <string name="warning">Warning!</string>
     <string name="link_repo">https://cago.readthedocs.io/en/latest/</string>
@@ -68,17 +68,15 @@
     <string name="email">Email</string>
     <string name="log_in">Log in</string>
     <string name="go">Go</string>
-    <string name="auth_msg">You receive an email with login link.\nOpen link in Cago app.</string>
-    <string name="error_send_link">Log-in link was not sent. :(</string>
-    <string name="error_log_in">Unexpected error during logging in.</string>
     <string name="repeat">Repeat</string>
     <string name="contact">Contact developer</string>
     <string name="privacy_policy">Privacy policy</string>
-    <string name="log_out">Log out</string>
     <string name="restart_app">In order to apply changes restart application.</string>
-    <string name="question_logout">Log out? All packages will be deleted from device!</string>
-    <string name="no_info">No information</string>
+    <string name="no_info">No сomment</string>
     <string name="publication">Public</string>
-    <string name="sync">Sync projects</string>
     <string name="unknown">unidentified</string>
+    <string name="privacy">Private</string>
+    <string name="version">Cago v%s</string>
+    <string name="cancel">Cancel</string>
+    <string name="invalid_name">Invalid name</string>
 </resources>

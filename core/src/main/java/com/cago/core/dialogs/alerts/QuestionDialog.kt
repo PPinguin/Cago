@@ -16,12 +16,15 @@ class QuestionDialog(
         return activity?.let {
             AlertDialog.Builder(it).apply {
                 setMessage(question)
-                setCancelable(cancelable)
-                setPositiveButton(getString(R.string.yes)){ d, _ ->
+                setPositiveButton(getString(R.string.yes)){ _, _ ->
                     listener()
-                    d.dismiss()
+                    closeDialog()
                 }
-                setNegativeButton(getString(R.string.no)){ d, _ -> d.dismiss()}
+                if(cancelable)
+                    setNeutralButton(getString(R.string.cancel)){ d, _ ->
+                        d.dismiss()
+                    }
+                setNegativeButton(getString(R.string.no)){ _, _ -> closeDialog()}
             }.create().apply { setCanceledOnTouchOutside(false) }
         } ?: throw IllegalStateException("Activity cannot be null")
     }

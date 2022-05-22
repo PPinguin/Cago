@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 import com.cago.core.models.Pack
 
 @Database(
-    version = 2, 
+    version = 4, 
     entities = [Pack::class]
 )
 abstract class 

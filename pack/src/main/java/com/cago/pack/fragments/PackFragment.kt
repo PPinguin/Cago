@@ -48,8 +48,6 @@ class PackFragment : Fragment() {
                         else -> super.onOptionsItemSelected(item)
                     }
                 }
-                it.fabEdit.visibility =
-                    if (viewModel.isOwnUser() == true) View.VISIBLE else View.GONE
                 it.fabEdit.setOnClickListener { editPack() }
                 TabLayoutMediator(it.tabs, it.pager) { tab, position ->
                     tab.text = if (position % 2 == 0)

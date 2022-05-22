@@ -1,13 +1,11 @@
 package com.cago.core.repository
 
+import android.net.Uri
+import androidx.core.net.toUri
 import com.cago.core.models.Pack
-import com.cago.core.models.server.PackInfo
-import com.cago.core.repository.callbacks.Callback
 import com.cago.core.repository.database.PackDao
 import com.cago.core.repository.managers.FileManager
-import com.cago.core.repository.managers.FirebaseManager
 import com.cago.core.utils.ErrorType
-import com.cago.core.utils.GlobalUtils.UID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -16,101 +14,46 @@ import javax.inject.Singleton
 
 @Singleton
 class Repository(
-    val packDao: PackDao,
-    private val firebaseManager: FirebaseManager,
+    private val packDao: PackDao,
     private val fileManager: FileManager
 ){
     val allPacks: Flow<List<Pack>> = packDao.getAllFlow()  
     private val scope = CoroutineScope(Dispatchers.IO)
 
     init {
-        UID = firebaseManager.getCurrentUID()
         scope.launch {
             packDao.getList().forEach { 
-                if(!fileManager.valid(it.name)) {
-                    fileManager.deletePack(it.name)
+                if(!fileManager.valid(it.name, it.path)) {
+                    fileManager.deletePack(it.name, it.path)
                     packDao.delete(it)
                 }
             }
         }
     }
     
-    fun synchronizePackages(){
-        firebaseManager.syncPackages { name, uid ->
-            if (fileManager.createPack(name)) {
-                scope.launch { packDao.insert(Pack(name, uid).also { it.actual = true }) }
-                fileManager.getFile(name)
-            } else null
-        }
-    }
-    
-    fun createPack(name: String, handle: (ErrorType?) -> Unit){
+    fun createPack(name: String, source: Uri?, handle: (ErrorType?) -> Unit){
         if(fileManager.createPack(name))
-            scope.launch {
-                packDao.insert(Pack(name, null))
-            }
+            if(source != null){
+                if(fileManager.copy(source, name))
+                    scope.launch {
+                        packDao.insert(Pack(name))
+                    }
+                else handle(ErrorType.ERROR_CREATE)
+            } else 
+                scope.launch {
+                    packDao.insert(Pack(name))
+                }
         else handle(ErrorType.ERROR_CREATE)
     }
     
     fun deletePack(pack: Pack, handle: (ErrorType?) -> Unit) {
-        if(fileManager.deletePack(pack.name)) {
+        if(fileManager.deletePack(pack.name, pack.path)) {
             scope.launch { 
-                firebaseManager.delete(pack)
                 packDao.delete(pack)
             }
         }
         else handle(ErrorType.ERROR_DELETE)
     }
     
-    fun deactualizate(name: String){
-        scope.launch { 
-            packDao.update(packDao.getByName(name).also { it.actual = false })
-        }
-    }
-    
-    fun search(query: String, callback: Callback<List<PackInfo>>) {
-        firebaseManager.searchByQuery(query, callback)
-    }
-    
-    fun generatePath(pack: Pack) = "$UID/${pack.name}"
-    
-    fun uploadPack(pack: Pack, handle: (ErrorType?) -> Unit) {
-        if(pack.actual) return
-        firebaseManager.uploadPack(fileManager.getFile(pack.name), pack.key != null, object : Callback<String> {
-            override fun success(data: String?) {
-                scope.launch { 
-                    packDao.update(packDao.getByName(pack.name).also { 
-                        if(data != null) it.key = data
-                        it.actual = true
-                    })
-                }
-            }
-            override fun failure(error: ErrorType?) {
-                handle(error)
-            }
-        })
-    }
-    
-    fun isLoggedIn(): Boolean = firebaseManager.isLoggedIn()
-    
-    fun logIn(link: String, callback: Callback<Nothing>){
-        firebaseManager.logIn(link, callback)
-    }
-    
-    fun sendLink(email: String, callback: Callback<Nothing>){
-        firebaseManager.sendLink(email, callback)
-    }
-    
-    fun logOut(update: ()->Unit){
-        scope.launch {
-            packDao.getList().forEach {
-                fileManager.deletePack(it.name)
-                packDao.delete(it)
-            }
-            firebaseManager.logOut()
-            update()
-        }
-    }
-    
-    fun getInfo() = firebaseManager.getCurrentInfo()
+    fun getPackUri(pack: Pack) = fileManager.getFile(pack.name).toUri()
 }

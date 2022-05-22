@@ -23,9 +23,9 @@ abstract class BaseDialog: DialogFragment() {
     fun setOnAccepted(l:()->Unit){
         onAccepted = l
     }
-
-    override fun onDismiss(dialog: DialogInterface) {
+    
+    fun closeDialog(){
         onAccepted?.invoke()
-        super.onDismiss(dialog)
+        dismiss()
     }
 }

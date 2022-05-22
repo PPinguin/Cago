@@ -51,17 +51,18 @@ class PackViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             packController.openPack(bundle, object : Callback<File> {
                 override fun success(data: File?) {
-                    loadPack(bundle.getString("name"), data)
+                    loadPack(bundle.getString("name"), data!!)
                 }
 
                 override fun failure(error: ErrorType?) {
+                    if(error != null) message(error.getResource())
                     pack.postValue(null)
                 }
             })
         }
     }
     
-    fun loadPack(name: String?, file: File?){
+    fun loadPack(name: String?, file: File){
         viewModelScope.launch(Dispatchers.Default){
             packController.setPack(file)
             packController.loadPack()
@@ -72,23 +73,29 @@ class PackViewModel @Inject constructor(
         }
     }
     
-    private fun changed(){changed = true}
+    private fun changed(){changed = packController.isOwn()}
 
-    fun addInput(name: String, type: InputType): Boolean =
+    fun addInput(name: String, type: InputType): Boolean {
         if (packController.notContainsInput(name)) {
-            packController.createInput(name, type)
+            try{
+                packController.createInput(name, type)
+            } catch (e: Exception){ return false } 
             updateInputs()
             changed()
-            true
-        } else false
+            return true
+        } else return false
+    }
 
-    fun editInput(input: Input, name: String, type: InputType) =
+    fun editInput(input: Input, name: String, type: InputType): Boolean {
         if (packController.notContainsInput(name, packController.inputsList.indexOf(input))) {
-            packController.editInput(input, name, type)
+            try{
+                packController.editInput(input, name, type)
+            } catch(e: Exception){ return false }
             updateInputs()
             changed()
-            true
-        } else false
+            return true
+        } else return false
+    }
 
     fun deleteInput(input: Input) = 
         viewModelScope.launch(Dispatchers.Default) { 
@@ -112,21 +119,27 @@ class PackViewModel @Inject constructor(
         inputsLiveData.postValue(packController.inputsList)
     }
     
-    fun addOutput(name: String, visible: Boolean, formula: String? = null) =
+    fun addOutput(name: String, visible: Boolean, formula: String? = null): Boolean {
         if (packController.notContainsOutput(name)) {
-            packController.createOutput(name, visible, formula ?: "")
+            try{
+                packController.createOutput(name, visible, formula ?: "")
+            } catch(e: Exception){ return false }
             updateOutputs()
             changed()
-            true
-        } else false
+            return true
+        } else return false
+    }
 
-    fun editOutput(output: Output, name: String, visible: Boolean) =
+    fun editOutput(output: Output, name: String, visible: Boolean): Boolean {
         if (packController.notContainsOutput(name, packController.outputsList.indexOf(output))) {
-            packController.editOutput(output, name, visible)
+            try{
+                packController.editOutput(output, name, visible)
+            } catch (e: Exception){ return false }
             updateOutputs()
             changed()
-            true
-        } else false
+            return true
+        } else return false
+    }
 
     fun deleteOutput(output: Output) =
         viewModelScope.launch(Dispatchers.Default) {
@@ -162,9 +175,7 @@ class PackViewModel @Inject constructor(
         packController.description = text
         changed()
     }
-
-    fun isOwnUser() = packController.own
-
+    
     fun run() {
         if(changed) {
             viewModelScope.launch(Dispatchers.Default) {

@@ -1,5 +1,6 @@
 package com.cago.core.repository
 
+import android.net.Uri
 import android.os.Bundle
 import com.cago.core.models.logic.Field
 import com.cago.core.models.logic.Input
@@ -7,9 +8,7 @@ import com.cago.core.models.logic.Output
 import com.cago.core.models.logic.parser.*
 import com.cago.core.repository.callbacks.Callback
 import com.cago.core.repository.managers.FileManager
-import com.cago.core.repository.managers.FirebaseManager
 import com.cago.core.utils.ErrorType
-import com.cago.core.utils.GlobalUtils.UID
 import com.cago.core.utils.InputType
 import java.io.File
 import java.util.*
@@ -18,12 +17,11 @@ import kotlin.math.pow
 
 @Singleton
 class PackController(
-    private val firebaseManager: FirebaseManager,
     private val fileManager: FileManager,
 ) {
 
     private var pack: File? = null
-    var own: Boolean? = null
+    private var own: Boolean? = null 
 
     val inputsList = arrayListOf<Field>()
     val outputsList = arrayListOf<Field>()
@@ -39,16 +37,15 @@ class PackController(
 
     fun openPack(data: Bundle, callback: Callback<File>) {
         val name = data.getString("name")!!
-        if (data.containsKey("path")) {
-                firebaseManager.downloadPack(
-                    data.getString("name", "-"),
-                    data.getString("path", "-"),
-                    callback)
+        val path = data.getString("path")
+        own = path == null
+        if (own == true) {
+            if (fileManager.valid(name, path)) callback.success(fileManager.getFile(name, path))
+            else callback.failure(ErrorType.ERROR_OPEN)
         } else {
-            if (fileManager.valid(name))
-                callback.success(fileManager.getFile(name))
-            else
-                callback.failure(ErrorType.ERROR_OPEN)
+            val file = fileManager.cache(Uri.parse(path), name)
+            if(file != null) callback.success(file)
+            else callback.failure(ErrorType.ERROR_OPEN)
         }
     }
 
@@ -57,9 +54,8 @@ class PackController(
     }
 
     fun savePack(): Boolean {
-        if (own != true) return false
         pack?.writeText("")
-        val content = StringBuilder("$UID\n") 
+        val content = StringBuilder("") 
         return try {
             inputsList.forEach { input ->
                 input as Input
@@ -90,8 +86,7 @@ class PackController(
             var end = false
             description = ""
             pack?.forEachLine { line ->
-                if (own == null) own = line == UID
-                else if (!end) {
+                if (!end) {
                     val params = line.split("|")
                     when (params[0]) {
                         ">" -> {
@@ -323,13 +318,17 @@ class PackController(
         relationIO.forEach { if(it.first == index) result.add(it.second) }
         return result
     }
+    
+    fun isOwn() = own == true
 
     fun close() {
-        if (own != true) pack?.delete()
-
-        own = null
+        if(own != true){
+            fileManager.deletePack(pack!!.name, "cache")
+        }
+        
         pack = null
         description = null
+        own = null
 
         inputsList.clear()
         outputsList.clear()

@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/search"
-        android:title="@string/search"
-        android:icon="@drawable/ic_search" 
-        app:showAsAction="ifRoom" />
-    <item android:id="@+id/sync"
-        android:title="@string/sync"
-        android:icon="@drawable/ic_sync"
+    
+    <item android:id="@+id/open"
+        android:title="@string/open"
+        android:icon="@drawable/ic_open"
         app:showAsAction="ifRoom"/>
     <item android:id="@+id/docs"
         android:title="@string/help"

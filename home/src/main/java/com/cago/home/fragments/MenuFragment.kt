@@ -7,14 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.cago.core.R
+import com.cago.core.databinding.FragmentMenuBinding
+import com.cago.core.dialogs.alerts.QuestionDialog
+import com.cago.core.models.Pack
 import com.cago.home.activities.HomeActivity
 import com.cago.home.adapters.MenuListAdapter
-import com.cago.core.databinding.FragmentMenuBinding
 import com.cago.home.dialogs.alerts.PackDialog
-import com.cago.core.dialogs.alerts.QuestionDialog
 import com.cago.home.dialogs.selections.EditPackDialog
-import com.cago.core.models.Pack
-import com.cago.core.utils.ErrorType
 import com.cago.home.viewmodels.HomeViewModel
 import com.google.android.material.snackbar.Snackbar
 
@@ -32,7 +31,7 @@ class MenuFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         binding = FragmentMenuBinding.inflate(inflater)
         // initialize UI
@@ -61,9 +60,6 @@ class MenuFragment : Fragment() {
                 getString(R.string.open) -> {
                     openPack(pack)
                 }
-                getString(R.string.upload) -> {
-                    uploadPack(pack)
-                }
                 getString(R.string.share) -> {
                     sharePack(pack)
                 }
@@ -75,34 +71,24 @@ class MenuFragment : Fragment() {
     }
 
     private fun sharePack(pack: Pack) {
-        if (pack.key == null) {
-            binding?.let {
-                Snackbar.make(
-                    it.root,
-                    getString(ErrorType.ERROR_SHARE.getResource(), pack.name),
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            }
-        } else {
-                val shareIntent = Intent.createChooser(
-                    Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, viewModel.generateUri(pack))
-                        type = "text/plain"
-                    }, null
-                )
-                requireActivity().startActivityFromFragment(this, shareIntent, 0)
-        }
+        val intent = Intent()
+        val uri = viewModel.getPackUri(pack)
+        intent.action = Intent.ACTION_SEND
+        intent.setDataAndType(uri, requireContext().contentResolver.getType(uri))
+        intent.putExtra(Intent.EXTRA_SUBJECT,
+            "Sharing File...");
+        intent.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
+        requireActivity().startActivity(Intent.createChooser(intent, "Share pack"))
     }
 
     private fun openPack(pack: Pack) {
-        (requireActivity() as HomeActivity).openPack(pack.name)
+        (requireActivity() as HomeActivity).openPack(pack.name, pack.path)
     }
 
     private fun createPack() {
-        PackDialog({ name ->
+        PackDialog { name ->
             viewModel.createPack(name)
-        }).show(requireActivity().supportFragmentManager, getString(R.string.new_pack))
+        }.show(requireActivity().supportFragmentManager, getString(R.string.new_pack))
     }
 
     private fun deletePack(pack: Pack) {
@@ -110,10 +96,6 @@ class MenuFragment : Fragment() {
             viewModel.deletePack(pack)
         }, getString(R.string.question_delete, pack.name))
             .show(requireActivity().supportFragmentManager, getString(R.string.delete))
-    }
-
-    private fun uploadPack(pack: Pack) {
-        viewModel.uploadPack(pack)
     }
 
     override fun onDestroyView() {

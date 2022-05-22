@@ -27,7 +27,7 @@
                 android:inputType="textMultiLine"
                 android:textSize="10pt"
                 android:background="@null"
-                android:hint="@string/info"
+                android:hint="@string/comment"
                 android:importantForAutofill="no" />
         </LinearLayout>
     </ScrollView>

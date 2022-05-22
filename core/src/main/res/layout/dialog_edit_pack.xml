@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -26,14 +27,6 @@
             android:layout_height="wrap_content"
             android:onClick="@{() -> listener.activate(@string/open)}"
             android:text="@string/open" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/Option"
-            android:drawableStart="@drawable/ic_upload"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> listener.activate(@string/upload)}"
-            android:text="@string/upload" />
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Option"

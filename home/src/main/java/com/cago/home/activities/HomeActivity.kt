@@ -1,20 +1,17 @@
 package com.cago.home.activities
 
-import android.app.Activity
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.os.bundleOf
-import androidx.navigation.findNavController
 import com.cago.core.R
 import com.cago.core.databinding.ActivityHomeBinding
-import com.cago.core.dialogs.alerts.QuestionDialog
+import com.cago.core.utils.ErrorType
 import com.cago.home.di.providers.HomeComponentProvider
 import com.cago.home.viewmodels.HomeViewModel
 import com.cago.pack.activities.PackActivity
@@ -26,47 +23,36 @@ class HomeActivity : AppCompatActivity() {
     lateinit var viewModel: HomeViewModel
     private var binding: ActivityHomeBinding? = null
     
-    private val activityForResult = 
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-            if(result.resultCode == Activity.RESULT_OK){
-                result.data?.extras?.let { 
-                    if(it.getBoolean("actual")) 
-                        viewModel.deactualizatePack(it.getString("name", ""))
+    private val getPack = registerForActivityResult(ActivityResultContracts.GetContent()){
+        try {
+            contentResolver.query(it,null,null,null,null)
+                ?.use { cursor ->
+                    val i = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    cursor.moveToFirst()
+                    val name = cursor.getString(i)
+                    if(name.takeLast(3) == ".cg") openPack(name.dropLast(3), it.toString())
+                    else throw Exception()
                 }
-            }
-        }
-
+        } catch(e: Exception){
+            viewModel.message(ErrorType.ERROR_ADD.getResource())  
+        } 
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         (application as HomeComponentProvider).getHomeComponent().inject(this)
-        viewModel.init()
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         setupUI()
     }
 
     private fun setupUI() {
-        viewModel.loggedIn.observe(this) {
-            if (it == false) {
-                startActivity(Intent(this, AuthActivity::class.java))
-                finish()
-            } else {
-                viewModel.initUserInfo()
-                binding?.navView?.getHeaderView(0)
-                    ?.findViewById<AppCompatTextView>(R.id.email)?.text =
-                    viewModel.userInfo?.get("email") ?: getString(R.string.unknown)
-            }
-        }
         binding?.apply {
             setSupportActionBar(toolbar)
-            navView.inflateHeaderView(R.layout.nav_header)
-                .findViewById<AppCompatTextView>(R.id.email).text =
-                viewModel.userInfo?.get("email") ?: getString(R.string.unknown)
             navView.setNavigationItemSelectedListener {
                 when (it.itemId) {
-                    R.id.search -> toSearch()
-                    R.id.sync -> sync()
+                    R.id.open -> open()
                     R.id.docs -> docs()
                     R.id.contact -> contact()
                     R.id.privacy -> privacy()
@@ -74,26 +60,13 @@ class HomeActivity : AppCompatActivity() {
                 drawerLayout.closeDrawer(navView)
                 true
             }
-            logout.setOnClickListener {
-                logOut()
-            }
-            version = packageManager.getPackageInfo(packageName, 0).versionName
+            version = getString(R.string.version, 
+                packageManager.getPackageInfo(packageName, 0).versionName)
         }
         supportActionBar?.apply {
             setHomeAsUpIndicator(R.drawable.ic_burger)
             setDisplayHomeAsUpEnabled(true)
             setHomeButtonEnabled(true)
-        }
-    }
-
-    private fun sync() {
-        viewModel.sync()
-    }
-
-    private fun toSearch() {
-        findNavController(R.id.nav_host_fragment).apply {
-            if (currentDestination?.id != R.id.searchFragment)
-                navigate(R.id.action_menuFragment_to_searchFragment)
         }
     }
 
@@ -113,23 +86,20 @@ class HomeActivity : AppCompatActivity() {
         )
     }
 
-    fun openPack(name: String, extra: Bundle? = null) {
-        activityForResult.launch(
+    fun openPack(name: String, path: String? = null) {
+        startActivity(
             Intent(this, PackActivity::class.java).apply {
                 putExtras(
                     bundleOf("name" to name).also {
-                        if (extra != null) it.putAll(extra)
+                        if (path != null) it.putString("path", path)
                     }
                 )
             },
         )
     }
-
-    private fun logOut() {
-        QuestionDialog({
-            viewModel.logOut()
-        }, getString(R.string.question_logout))
-            .show(supportFragmentManager, getString(R.string.log_out))
+    
+    private fun open(){
+        getPack.launch("application/*")
     }
 
     private fun docs() {
