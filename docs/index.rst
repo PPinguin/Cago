@@ -28,13 +28,13 @@ Formulas syntax
 Setting value of output field means defining a formula in which value of field will be calculated. To avoid errors you should folow this rules:
 
 #. Use arethmetic operations: **+**, **-**, *****, **/**, **^** and brackets.
-#. Write **#n** to get value of **n** input field.
-#. Write **@n** to get value of **n** output field.
+#. Write **[name]** to get value of input field with name **name**.
+#. Write **<name>** to get value of output field **name**.
 
 Examples of valid formula:
 ####
-  #2+5*(#3+10)
+  [a]+5*([b]+10)
   
-  @1+@2+#3/5
+  <y>+<x>+[go]/5
   
-  (2^#3)-1*(@2+1)
+  (2^<weight>)-5*([age]+1)
