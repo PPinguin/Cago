@@ -7,7 +7,7 @@ abstract class Field(name: String) {
     
     var name = name
         set(value) {
-            if(value.contains(Regex("[\\W]"))) throw Exception()
+            if(value.contains(Regex("[^\\s\\w]"))) throw Exception()
             field = value
         }
 
