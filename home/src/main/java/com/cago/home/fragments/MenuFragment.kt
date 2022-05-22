@@ -73,12 +73,8 @@ class MenuFragment : Fragment() {
     private fun sharePack(pack: Pack) {
         val intent = Intent()
         val uri = viewModel.getPackUri(pack)
-        intent.action = Intent.ACTION_SEND
         intent.setDataAndType(uri, requireContext().contentResolver.getType(uri))
-        intent.putExtra(Intent.EXTRA_SUBJECT,
-            "Sharing File...");
-        intent.putExtra(Intent.EXTRA_TEXT, "Sharing File...");
-        requireActivity().startActivity(Intent.createChooser(intent, "Share pack"))
+        requireActivity().startActivity(Intent.createChooser(intent, getString(R.string.share_pack)))
     }
 
     private fun openPack(pack: Pack) {
